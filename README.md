@@ -1,4 +1,5 @@
 # SklepRowerowy
+Grupa 2
 
 Adam Lewandowski
 Zuzanna Jasińska
