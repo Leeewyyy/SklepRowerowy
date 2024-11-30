@@ -1,0 +1,47 @@
+---
+title: "Sklep rowerowy"
+author: "Zuzanna Jasińska (202283), Kacper Bareja, Adam Lewandowski, Jan Gasik"
+#date: "`r Sys.Date()`"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dane
+
+Zbiór danych w pliku *sklep_rowerowy.csv* zawiera szczegółowe informacje na temat 1000 użytkowników z różnych środowisk oraz tego, czy kupują rower z kategoryczną zmienną wyjściową. W zbiorze danych znajdują się pewne wartości NA.
+
+### Wczytanie i wizualizacja danych
+
+W tabeli pokazano 10 pierwszych wierszy zbioru danych.
+
+```{r}
+library(gt)
+data <- read.csv("sklep_rowerowy.csv")
+gt(head(data,10))
+```
+
+
+<!-- ## GitHub Documents -->
+
+<!-- This is an R Markdown format used for publishing markdown documents to GitHub. When you click the **Knit** button all R code chunks are run and a markdown file (.md) suitable for publishing to GitHub is generated. -->
+
+<!-- ## Including Code -->
+
+<!-- You can include R code in the document as follows: -->
+
+<!-- ```{r cars} -->
+<!-- summary(cars) -->
+<!-- ``` -->
+
+<!-- ## Including Plots -->
+
+<!-- You can also embed plots, for example: -->
+
+<!-- ```{r pressure, echo=FALSE} -->
+<!-- plot(pressure) -->
+<!-- ``` -->
+
+<!-- Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot. -->
