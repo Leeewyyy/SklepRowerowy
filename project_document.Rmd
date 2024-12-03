@@ -9,39 +9,55 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Dane
+# Wstęp
+Klienci pewnego sklepu rowerowego zostali poproszeni o wypełnienie ankiety, gdzie podawali dane na swój temat (m.in. status cywilny, przychód, liczbę dzieci, płeć, wiek) oraz czy kupili rower. Celem analizy jest znalezienie czynników, które decydują o tym, czy rower zostaje zakupiony.
 
+## Dane
 Zbiór danych w pliku *sklep_rowerowy.csv* zawiera szczegółowe informacje na temat 1000 użytkowników z różnych środowisk oraz tego, czy kupują rower z kategoryczną zmienną wyjściową. W zbiorze danych znajdują się pewne wartości NA.
 
-### Wczytanie i wizualizacja danych
-
-W tabeli pokazano 10 pierwszych wierszy zbioru danych.
-
+## Potrzebne biblioteki
+Do pracy z danymi użyto następujących bibliotek.
 ```{r}
 library(gt)
+library(naniar)
+```
+
+### Wczytanie i wizualizacja danych
+W tabeli pokazano 10 pierwszych wierszy zbioru danych. Można zauważyć, że w zbiorze występują brakujące dane.
+```{r}
 data <- read.csv("sklep_rowerowy.csv")
 gt(head(data,10))
 ```
 
+# Detekcja brakujących danych
+## Początkowa liczba i proporcje NA
+Na początku sprawdzono ile występuje wartości NA i wartości pełnych w zbiorze danych. Dodatkowo za pomocą funkcji *is.special* sprawdzono czy w zbiorze danych występują inne wartości specjalne. Jeśli takowe znaleziono, zastąpiono je wartościami NA.
+```{r}
+n_miss(data)
+n_complete(data)
 
-<!-- ## GitHub Documents -->
+is.special <- function(x){
+  if(is.numeric(x)) !is.finite(x) else is.na(x)
+}
+sapply(data, is.special)
 
-<!-- This is an R Markdown format used for publishing markdown documents to GitHub. When you click the **Knit** button all R code chunks are run and a markdown file (.md) suitable for publishing to GitHub is generated. -->
+for(n in colnames(data)){
+  is.na(data[[n]]) <- is.special(data[[n]])
+}
+summary(data)
+```
 
-<!-- ## Including Code -->
+Znaleziono 31 wartości NA. W celu głębszej analizy stworzono tabelę podsumowującą braki dla wszystkich zmiennych.
+```{r}
+miss_var_summary(data)
+```
 
-<!-- You can include R code in the document as follows: -->
+Brakujące dane znajdują się w kolumnach: *cars*, *children*, *age*, *income*.
 
-<!-- ```{r cars} -->
-<!-- summary(cars) -->
-<!-- ``` -->
+Warto również dowiedzieć się ile wierszy zawiera wartości NA. Poniższy kod tworzy tabelę pokazującą liczbę wierszy zawierających daną liczbę braków.
+```{r}
+miss_case_table(data)
+```
+97% wierszy jest kompletna. 27 wierszy ma jedną wartość NA. Dwa braki mają 2 wiersze.
 
-<!-- ## Including Plots -->
 
-<!-- You can also embed plots, for example: -->
-
-<!-- ```{r pressure, echo=FALSE} -->
-<!-- plot(pressure) -->
-<!-- ``` -->
-
-<!-- Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot. -->
