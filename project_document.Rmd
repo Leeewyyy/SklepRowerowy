@@ -61,3 +61,18 @@ miss_case_table(data)
 97% wierszy jest kompletna. 27 wierszy ma jedną wartość NA. Dwa braki mają 2 wiersze.
 
 
+```{r}
+
+install.packages('naniar')
+library(gt)
+library(naniar)
+View(data)
+```
+
+
+
+```{r}
+data_non_vis <- data
+gg_miss_upset(data, nsets=12)
+```
+
