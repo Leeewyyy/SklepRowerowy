@@ -60,4 +60,15 @@ miss_case_table(data)
 ```
 97% wierszy jest kompletna. 27 wierszy ma jedną wartość NA. Dwa braki mają 2 wiersze.
 
+#wizualizacja brakujących wartości
+```{r}
+library(naniar)
+vis_miss(data)
+```
+Wizualizacja całego zbioru danych wykazała nieiwlką, brakującą wartość w wysokości 0,2%
+
+```{r}
+gg_miss_var(data)
+```
+Dzięki tej funkcji stworzyliśmy wykres słupkowy pokazujący liczbę brakujących wartości dla każdej zmiennej
 
