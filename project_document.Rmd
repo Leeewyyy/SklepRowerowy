@@ -72,3 +72,27 @@ gg_miss_var(data)
 ```
 Dzięki tej funkcji stworzyliśmy wykres słupkowy pokazujący liczbę brakujących wartości dla każdej zmiennej
 
+```{r}
+
+install.packages('naniar')
+library(gt)
+library(naniar)
+View(data)
+```
+
+
+
+```{r}
+data_non_vis <- data
+gg_miss_upset(data, nsets=12)
+```
+### opis danych
+
+najwięcej danych odstających (bezwzględnie) widnieje dla zmiennych Cars_NA, Children_NA i Age_NA (tj. poziome słupki)
+
+int. kolumna 1: jest dokładnie 9 obserwacji w których wiersz Cars_NA ma wartość NA
+int. kolumna 2: jest dokładnie 7 obserwacji w których wiersz Children_NA ma wartość NA
+int. Kolumna 3: jest dokładnie 6 obserwacji w których wiersz Age_NA ma wartość NA
+int. kolumna 4: jest dokładnie 5 obserwacji w których wiersz Income_NA ma wartość NA
+int. kolumna 5: jest dokładnie 1 obserwacji w których wiersze Income_NA i Age_NA ma wartość NA
+int. kolumna 6: jest dokładnie 1 obserwacji w których wiersz Age_NA i Chindren_NA ma wartość 1
