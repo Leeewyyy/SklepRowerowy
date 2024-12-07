@@ -96,3 +96,47 @@ int. Kolumna 3: jest dokładnie 6 obserwacji w których wiersz Age_NA ma wartoś
 int. kolumna 4: jest dokładnie 5 obserwacji w których wiersz Income_NA ma wartość NA
 int. kolumna 5: jest dokładnie 1 obserwacji w których wiersze Income_NA i Age_NA ma wartość NA
 int. kolumna 6: jest dokładnie 1 obserwacji w których wiersz Age_NA i Chindren_NA ma wartość 1
+
+
+Podejmiemy teraz próbę analizy zależności tych braków między sobą. Zacznijmy od zbadania zależności zmiennej cars, gdyż ma ona najwięcej wartości NA. Wyznaczymy wykres zależności w stosunku do zmiennych Income oraz Age.
+
+```{r}
+library("tidyverse")
+ggplot(data = data, aes(x = Cars, y = Income)) + 
+  geom_point() +
+  geom_miss_point() +
+  scale_color_manual(values = c("darkorange","cyan4")) +
+  theme_minimal()
+```
+
+Gdyby nie jedna obserwacja można by przyjąć, że brak danych w zmeinnej Cars zależy od zmiennej Income (osoby, które podały niski Income nie podają zmiennej Cars). Jednak mamy jedną obserwację, dla której zmienna Income ma wysoką wartość, a Cars pozostaje NA. Dla najwyższych wartości Cars (3 i 4) nie zauważamy wartości NA w zmiennej Income, możemy więc przyjąć, że istnieje pewna zależność między tymi dwoma zmiennymi.
+
+```{r}
+ggplot(data = data, aes(x = Cars, y = Age)) + 
+  geom_point() +
+  geom_miss_point() +
+  scale_color_manual(values = c("darkorange","cyan4")) +
+  theme_minimal()
+```
+
+Dla zmeinnej Age sytuacja wygląda tak samo - osoby z różnym wiekiem nie podały ilości samochodów, jak i osoby z różną ilością samocodów nie podały wieku.
+
+Pod analizę poddamy teraz zmienną Age i jej zależność ze zmiennymi Children i Income.
+
+```{r}
+ggplot(data = data, aes(x = Age, y = Children)) + 
+  geom_point() +
+  geom_miss_point() +
+  scale_color_manual(values = c("darkorange","cyan4")) +
+  theme_minimal()
+ggplot(data = data, aes(x = Age, y = Income)) + 
+  geom_point() +
+  geom_miss_point() +
+  scale_color_manual(values = c("darkorange","cyan4")) +
+  theme_minimal()
+```
+
+Dla zmiennych Age i Children nie zaobserwowaliśmy żadnych zależności. Można tylko zauważyć, że istnieje jedna obserwacja dla których obie zmienne mają wartość NA.
+Inaczej sytuacja wygląda dla zmiennych Age i Income. Możemy tutaj zaobserwować, że tylko osoby z niską wartością zmiennej Income nie podały danych dla Age, jak i tylko osoby z niskim wiekiem nie podały swojego Income. Występuje również jedna sytuacja, w której obie zmienne nie mają podanej wartości.
+
+Pozostałe kombinacje zmiennej nie przedstawiają żadnych zależności między sobą.
