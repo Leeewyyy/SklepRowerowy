@@ -74,7 +74,6 @@ Dzięki tej funkcji stworzyliśmy wykres słupkowy pokazujący liczbę brakując
 
 ```{r}
 
-install.packages('naniar')
 library(gt)
 library(naniar)
 View(data)
@@ -140,3 +139,38 @@ Dla zmiennych Age i Children nie zaobserwowaliśmy żadnych zależności. Można
 Inaczej sytuacja wygląda dla zmiennych Age i Income. Możemy tutaj zaobserwować, że tylko osoby z niską wartością zmiennej Income nie podały danych dla Age, jak i tylko osoby z niskim wiekiem nie podały swojego Income. Występuje również jedna sytuacja, w której obie zmienne nie mają podanej wartości.
 
 Pozostałe kombinacje zmiennej nie przedstawiają żadnych zależności między sobą.
+
+
+Analiza brakujących danych (NA) w zbiorze oraz ich uzupełnienie odpowiednimi wartościami. Celem jest uzyskanie kompletnego zbioru danych, który będzie gotowy do dalszej analizy.
+
+```{r}
+library("VIM")
+library("tidyverse")
+```
+
+Implementacja zmiennej Cars, Age, Children:
+```{r}
+data <- hotdeck(data = data, variable = "Cars", domain_var = c("Income", "Age"))
+summary(data$Cars)
+```
+Rozkład zmiennej pokazuje, że wartość minimalna wynosi 0, a maksymalna 4. Braki zostały skutecznie uzupełnione, co można zweryfikować w kolumnie NA's (0 po imputacji).
+
+```{r}
+data <- hotdeck(data, variable = "Age", domain_var = "Income")
+summary(data$Age)
+```
+Wartości Age po imputacji wahają się od 25 (minimum) do 89 (maksimum).
+
+```{r}
+data <- hotdeck(data, variable = "Children")
+summary(data$Children)
+```
+Wartości Children mieszczą się w zakresie od 0 do 5.
+
+Weryfikacja i podsumowanie końcowego zbioru danych.
+```{r}
+colSums(is.na(data))
+print(data)
+```
+W przeprowadzonej analizie zidentyfikowane zostały braki danych (NA) w zmiennych Cars, Age, Children oraz Income, przy czym najwięcej braków dotyczyło zmiennej Cars (aż 9 obserwacji). Wizualizacja wykazała zależność między brakami w zmiennej Cars a niskimi wartościami Income, a także podobną relację dla zmiennej Age. Braki zostały uzupełnione metodą Hot Deck, wykorzystując zmienne Income i Age jako kryteria podobieństwa do imputacji brakujących wartości. W rezultacie uzyskano kompletny zbiór danych, który jest gotowy do dalszej analizy statystycznej lub modelowania.
+
