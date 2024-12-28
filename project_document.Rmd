@@ -25,7 +25,7 @@ library(naniar)
 ### Wczytanie i wizualizacja danych
 W tabeli pokazano 10 pierwszych wierszy zbioru danych. Można zauważyć, że w zbiorze występują brakujące dane.
 ```{r}
-data <- read.csv("sklep_rowerowy.csv")
+data <- read.csv("sklep_rowerowy.csv", na.strings = c("", "NA"))
 gt(head(data,10))
 ```
 
@@ -148,9 +148,9 @@ library("VIM")
 library("tidyverse")
 ```
 
-Użycie funkcji hotdeck dla zmiennych: Cars, Income, Age, Children:
+Użycie funkcji hotdeck dla zmiennych z wartościami NA:
 ```{r}
-data <- hotdeck(data = data, variable = c("Cars", "Age", "Income", "Children"))
+data <- hotdeck(data = data, variable = c("Cars", "Age", "Income", "Children", "Gender", "Marital.Status", "Home.Owner"))
 
 colSums(is.na(data))
 ```
@@ -173,5 +173,5 @@ summary(data$Children)
 ```{r}
 print(data)
 ```
-W przeprowadzonej analizie zidentyfikowane zostały braki danych (NA) w zmiennych Cars, Age, Children oraz Income, przy czym najwięcej braków dotyczyło zmiennej Cars (aż 9 obserwacji). Wizualizacja wykazała zależność między brakami w zmiennej Cars a niskimi wartościami Income, a także podobną relację dla zmiennej Age. Braki zostały uzupełnione metodą Hot Deck. W rezultacie uzyskano kompletny zbiór danych, który jest gotowy do dalszej analizy statystycznej lub modelowania.
+W przeprowadzonej analizie zidentyfikowane zostały braki danych (NA) w zmiennych "Cars", "Age", "Income", "Children", "Gender", "Marital.Status", "Home.Owner", przy czym najwięcej braków dotyczyło zmiennej Cars (aż 9 obserwacji). Wizualizacja wykazała zależność między brakami w zmiennej Cars a niskimi wartościami Income, a także podobną relację dla zmiennej Age. Braki zostały uzupełnione metodą Hot Deck. W rezultacie uzyskano kompletny zbiór danych, który jest gotowy do dalszej analizy statystycznej lub modelowania.
 
