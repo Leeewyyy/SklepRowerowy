@@ -148,29 +148,30 @@ library("VIM")
 library("tidyverse")
 ```
 
-Implementacja zmiennej Cars, Age, Children:
+Użycie funkcji hotdeck dla zmiennych: Cars, Income, Age, Children:
 ```{r}
-data <- hotdeck(data = data, variable = "Cars", domain_var = c("Income", "Age"))
+data <- hotdeck(data = data, variable = c("Cars", "Age", "Income", "Children"))
+
+colSums(is.na(data))
+```
+Dla powyższych zmiennych wartości NA nie występują.
+
+```{r}
+print("Income:")
+summary(data$Income)
+
+print("Cars:")
 summary(data$Cars)
-```
-Rozkład zmiennej pokazuje, że wartość minimalna wynosi 0, a maksymalna 4. Braki zostały skutecznie uzupełnione, co można zweryfikować w kolumnie NA's (0 po imputacji).
 
-```{r}
-data <- hotdeck(data, variable = "Age", domain_var = "Income")
+print("Age:")
 summary(data$Age)
-```
-Wartości Age po imputacji wahają się od 25 (minimum) do 89 (maksimum).
 
-```{r}
-data <- hotdeck(data, variable = "Children")
+print("Children:")
 summary(data$Children)
 ```
-Wartości Children mieszczą się w zakresie od 0 do 5.
 
-Weryfikacja i podsumowanie końcowego zbioru danych.
 ```{r}
-colSums(is.na(data))
 print(data)
 ```
-W przeprowadzonej analizie zidentyfikowane zostały braki danych (NA) w zmiennych Cars, Age, Children oraz Income, przy czym najwięcej braków dotyczyło zmiennej Cars (aż 9 obserwacji). Wizualizacja wykazała zależność między brakami w zmiennej Cars a niskimi wartościami Income, a także podobną relację dla zmiennej Age. Braki zostały uzupełnione metodą Hot Deck, wykorzystując zmienne Income i Age jako kryteria podobieństwa do imputacji brakujących wartości. W rezultacie uzyskano kompletny zbiór danych, który jest gotowy do dalszej analizy statystycznej lub modelowania.
+W przeprowadzonej analizie zidentyfikowane zostały braki danych (NA) w zmiennych Cars, Age, Children oraz Income, przy czym najwięcej braków dotyczyło zmiennej Cars (aż 9 obserwacji). Wizualizacja wykazała zależność między brakami w zmiennej Cars a niskimi wartościami Income, a także podobną relację dla zmiennej Age. Braki zostały uzupełnione metodą Hot Deck. W rezultacie uzyskano kompletny zbiór danych, który jest gotowy do dalszej analizy statystycznej lub modelowania.
 
