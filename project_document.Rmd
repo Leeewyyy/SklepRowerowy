@@ -177,29 +177,34 @@ W przeprowadzonej analizie zidentyfikowane zostały braki danych (NA) w zmiennyc
 
 ###Wizualizacja Danych
 
+```{r}
+install.packages('ggplot2')
+library(ggplot2)
+View(data)
+```
 #Zmienna Martial.Status
 
 ```{r}
-ggplot(data, aes(x=data$martial.status, y=data$))+
-  geom_col(fill=lightpink2)+
+ggplot(data, aes(x=data$martial.status, y=data$Purchased.Bike))+
+  geom_col(fill='lightpink2')+
   xlab('martial.status')+
-  ylab('')
+  ylab('Purchased.Bike')
 ```
 
 
 #Zmienna Gender
 
 ```{r}
-ggplot(data, aes(x=data$gender, y=data$))+
-  geom_col(fill=green4)+
+ggplot(data, aes(x=data$gender, y=data$Purchased.Bike))+
+  geom_col(fill='green4')+
   xlab('gender')+
-  ylab('')
+  ylab('Purchased.Bike')
 ```
 
 #Zmienna Income
 
 ```{r}
-ggplot(data, aes(x=data$income, y=data$))+
-  geom_col(fill=)+
+ggplot(data, aes(x=data$income, y=data$Purchased.Bike))+
+  geom_col(fill='blue4')+
   xlab('income')+
-  ylab('')
+  ylab('Purchased.Bike')
