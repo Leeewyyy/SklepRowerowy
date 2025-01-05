@@ -185,9 +185,9 @@ View(data)
 #Zmienna Martial.Status
 
 ```{r}
-ggplot(data, aes(x=data$martial.status, y=data$Purchased.Bike))+
-  geom_col(fill='lightpink2')+
-  xlab('martial.status')+
+ggplot(data, aes(x=data$Marital.Status, y=data$Purchased.Bike))+
+  geom_col(fill='pink')+
+  xlab('Marital.Status')+
   ylab('Purchased.Bike')
 ```
 
@@ -195,7 +195,7 @@ ggplot(data, aes(x=data$martial.status, y=data$Purchased.Bike))+
 #Zmienna Gender
 
 ```{r}
-ggplot(data, aes(x=data$gender, y=data$Purchased.Bike))+
+ggplot(data, aes(x=data$Gender, y=data$Purchased.Bike))+
   geom_col(fill='green4')+
   xlab('gender')+
   ylab('Purchased.Bike')
@@ -204,7 +204,7 @@ ggplot(data, aes(x=data$gender, y=data$Purchased.Bike))+
 #Zmienna Income
 
 ```{r}
-ggplot(data, aes(x=data$income, y=data$Purchased.Bike))+
+ggplot(data, aes(x=data$Income, y=data$Purchased.Bike))+
   geom_col(fill='blue4')+
   xlab('income')+
   ylab('Purchased.Bike')
@@ -212,19 +212,23 @@ ggplot(data, aes(x=data$income, y=data$Purchased.Bike))+
 
 #Zmienna Region
 ```{r}
-ggplot(data, aes(x=data$Region, y=data$Purchased.Bike))+
-  geom_col(fill='red')+
-  xlab('Region')+
-  ylab('Liczba osób które kupiły rower')+
-  ggtitle('Zakup roweru w zależności od regionu')
+aggregated_data <- data %>%
+  group_by(Region) %>%
+  summarise(Total_Bikes = sum(Purchased.Bike == "Yes"))
+
+ggplot(aggregated_data, aes(x = Region, y = Total_Bikes)) +
+  geom_col(fill = "red") +
+  xlab("Region") +
+  ylab("Liczba osób które kupiły rower") +
+  ggtitle("Zakup roweru w zależności od regionu")
 ```
 
 #Zmienna Age
 ```{r}
-ggplot(data, aes(x=data$Age, y=data$Purchased.Bike))+
-  geom_col(fill='black')+
-  scale_x_continuous(breaks = seq(20, 80, by = 5), limits = c(20,80)) + 
-  xlab('Wiek')+
-  ylab('Liczba osób które kupiły rower')+
-  ggtitle('Zakup roweru w zależności od wieku')
+ggplot(data %>% filter(Purchased.Bike == "Yes"), aes(x = Age)) +
+  geom_bar(fill = "black") +
+  scale_x_continuous(breaks = seq(20, 80, by = 5), limits = c(20, 80)) +
+  xlab("Wiek") +
+  ylab("Liczba osób które kupiły rower") +
+  ggtitle("Zakup roweru w zależności od wieku")
 ```
