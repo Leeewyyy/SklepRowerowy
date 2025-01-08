@@ -185,31 +185,68 @@ View(data)
 #Zmienna Martial.Status
 
 ```{r}
-ggplot(data, aes(x=data$Marital.Status, y=data$Purchased.Bike))+
-  geom_col(fill='pink')+
-  xlab('Marital.Status')+
-  ylab('Purchased.Bike')
+
+ggplot(data, aes(x = Marital.Status, fill = Purchased.Bike)) +
+  geom_bar(position = "dodge", color = "black", size = 0.3) +
+  scale_fill_manual(values = c("Yes" = "green4", "No" = "red3")) +
+  xlab('Marital Status') +
+  ylab('Number of Bikes Purchased') +
+  ggtitle('Purchased Bikes by Marital Status and Purchase Decision') +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.text = element_text(size = 10)
+  )
+
 ```
-
-
-#Zmienna Gender
-
+Na analizowanym wykresie, możemy zauważyć, iż to single w większej mierze decydują się na zakup rowerów, prównując bezwzględnie w stosunku do married. Osoby w związku małżeńskim w zdecydowanie większej mierze nie deccydują się na zakup rowerów. Ilość osób o których nie mamy danych o ich stanie cywilnym jest marginalna i nie ma wpływu na całokształt analizy.
 ```{r}
-ggplot(data, aes(x=data$Gender, y=data$Purchased.Bike))+
-  geom_col(fill='green4')+
-  xlab('gender')+
-  ylab('Purchased.Bike')
-```
 
+ggplot(data, aes(x = Gender, fill = Purchased.Bike)) +
+  geom_bar(position = "dodge", color = "black", size = 0.3) +
+  scale_fill_manual(values = c("Yes" = "green4", "No" = "red3")) +
+  xlab('Gender') +
+  ylab('Number of Bikes Purchased') +
+  ggtitle('Purchased Bikes by Gender') +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.text = element_text(size = 10)
+  )
+
+```
+Z powyższego wykresu, cięzko wysunąć jednoznaczne wnioski. Obie statystyki zarówno dla male jak i female wyglądają dość tożsamo. W obu płciach delikatnie dominuje decyzja o braku zakupu roweru. Bezwzględnie to więcej mężczyzn nie kupiło roweru.
 #Zmienna Income
 
 ```{r}
-ggplot(data, aes(x=data$Income, y=data$Purchased.Bike))+
-  geom_col(fill='blue4')+
-  xlab('income')+
-  ylab('Purchased.Bike')
-```
 
+# Tworzenie nowych kategorii dochodów
+data$Income.Category <- cut(data$Income, 
+                            breaks = c(0, 20000, 40000, 60000, 80000, 100000, Inf), 
+                            labels = c("0-20k", "20k-40k", "40k-60k", "60k-80k", "80k-100k", "100k+"),
+                            right = FALSE)
+
+# Tworzenie wykresu z rozbiciem na poszczególne kategorie dochodów oraz wartości "Yes" i "No"
+ggplot(data, aes(x = Income.Category, fill = Purchased.Bike)) +
+  geom_bar(position = "dodge", color = "black", size = 0.3) +
+  scale_fill_manual(values = c("Yes" = "green4", "No" = "red3")) +
+  xlab('Income Category') +
+  ylab('Number of Bikes Purchased') +
+  ggtitle('Purchased Bikes by Income Level and Purchase Decision') +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.text = element_text(size = 10, angle = 45, hjust = 1)
+  )
+
+```
+Aby łatwiej analizować dane, pozwoliłem sobie na wyszczególnienie kilku kategorii Income. Do pewnego momentu, można zauważyć iż wyższy income przekłada się na większy wolumen sprzedaży. Statystycznie patrząc, poza wystrzałem no w grupie 20k-40k, wykres charakteryzuje się rozkładem normalnym. W grupach o wyższych poziomach dochodu, marginalnie więcej mamy decyzji na nie. Zapewne przy wyższych pozioach dochodu, mogą już istnieć inne alternatywy dla roweru zarówno jako środka transportu jak i dla rekreacji.
 #Zmienna Region
 ```{r}
 aggregated_data <- data %>%
