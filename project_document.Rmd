@@ -183,15 +183,13 @@ library(ggplot2)
 View(data)
 ```
 #Zmienna Martial.Status
-
 ```{r}
-
 ggplot(data, aes(x = Marital.Status, fill = Purchased.Bike)) +
   geom_bar(position = "dodge", color = "black", size = 0.3) +
   scale_fill_manual(values = c("Yes" = "green4", "No" = "red3")) +
-  xlab('Marital Status') +
-  ylab('Number of Bikes Purchased') +
-  ggtitle('Purchased Bikes by Marital Status and Purchase Decision') +
+  xlab('Stan cywilny') +
+  ylab('Liczba osób które kupiły rower') +
+  ggtitle('Zakup rowerów według stanu cywilnego i decyzji o zakupie') +
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
@@ -199,17 +197,17 @@ ggplot(data, aes(x = Marital.Status, fill = Purchased.Bike)) +
     axis.title.y = element_text(size = 12, face = "bold"),
     axis.text = element_text(size = 10)
   )
-
 ```
-Na analizowanym wykresie, możemy zauważyć, iż to single w większej mierze decydują się na zakup rowerów, prównując bezwzględnie w stosunku do married. Osoby w związku małżeńskim w zdecydowanie większej mierze nie deccydują się na zakup rowerów. Ilość osób o których nie mamy danych o ich stanie cywilnym jest marginalna i nie ma wpływu na całokształt analizy.
-```{r}
+Na analizowanym wykresie, możemy zauważyć, iż to single częściej decydują się na zakup rowerów, prównując bezwzględnie w stosunku do żonatych/zamężnych. Większość osób w związku małżeńskim nie deccyduje się na zakup rowerów. Liczba osób, o których nie mamy danych o ich stanie cywilnym jest marginalna i nie ma wpływu na całokształt analizy.
 
+#Zmienna Gender
+```{r}
 ggplot(data, aes(x = Gender, fill = Purchased.Bike)) +
   geom_bar(position = "dodge", color = "black", size = 0.3) +
   scale_fill_manual(values = c("Yes" = "green4", "No" = "red3")) +
-  xlab('Gender') +
-  ylab('Number of Bikes Purchased') +
-  ggtitle('Purchased Bikes by Gender') +
+  xlab('Płeć') +
+  ylab('Liczba osób które kupiły rower') +
+  ggtitle('Zakup rowerów według płci') +
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
@@ -217,13 +215,11 @@ ggplot(data, aes(x = Gender, fill = Purchased.Bike)) +
     axis.title.y = element_text(size = 12, face = "bold"),
     axis.text = element_text(size = 10)
   )
-
 ```
-Z powyższego wykresu, cięzko wysunąć jednoznaczne wnioski. Obie statystyki zarówno dla male jak i female wyglądają dość tożsamo. W obu płciach delikatnie dominuje decyzja o braku zakupu roweru. Bezwzględnie to więcej mężczyzn nie kupiło roweru.
+Z powyższego wykresu, ciężko wysunąć jednoznaczne wnioski. Obie statystyki zarówno dla mężczyzn jak i kobiet wyglądają dość tożsamo. W obu płciach delikatnie dominuje decyzja o braku zakupu roweru. Bezwzględnie to więcej mężczyzn nie kupiło roweru.
+
 #Zmienna Income
-
 ```{r}
-
 # Tworzenie nowych kategorii dochodów
 data$Income.Category <- cut(data$Income, 
                             breaks = c(0, 20000, 40000, 60000, 80000, 100000, Inf), 
@@ -234,9 +230,40 @@ data$Income.Category <- cut(data$Income,
 ggplot(data, aes(x = Income.Category, fill = Purchased.Bike)) +
   geom_bar(position = "dodge", color = "black", size = 0.3) +
   scale_fill_manual(values = c("Yes" = "green4", "No" = "red3")) +
-  xlab('Income Category') +
-  ylab('Number of Bikes Purchased') +
-  ggtitle('Purchased Bikes by Income Level and Purchase Decision') +
+  xlab('Dochód') +
+  ylab('Liczba osób które kupiły rower') +
+  ggtitle('Zakup rowerów według dochodu') +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.text = element_text(size = 10, angle = 45, hjust = 1)
+  )
+```
+Aby łatwiej analizować dane, pozwoliłem sobie na wyszczególnienie kilku kategorii Income. Do pewnego momentu, można zauważyć iż wyższy dochód przekłada się na większą sprzedaż. Analizując statystycznie, poza wyraźnym wzrostem w grupie dochodowej 20k-40k, wykres wykazuje cechy rozkładu normalnego. W grupach o wyższych poziomach dochodu, marginalnie więcej mamy decyzji na nie. Zapewne przy wyższych poziomach dochodu, mogą już istnieć inne alternatywy dla roweru zarówno jako środka transportu jak i dla rekreacji.
+
+#Zmienna Region
+```{r}
+# Obliczenie procentów
+data_percent <- data %>%
+  group_by(Region, Purchased.Bike) %>%
+  summarize(
+    Total = n(), # Liczba osób w danej grupie (Yes lub No)
+    .groups = "drop" # Usuwamy dodatkowe informacje o grupach
+  ) %>%
+  mutate(Percentage = (Total / sum(Total)) * 100)  # Procentowy udział
+
+# Ustawienie wartości "Yes", "No" w odpowiedniej kolejności
+data_percent$Purchased.Bike <- factor(data_percent$Purchased.Bike, levels = c("Yes", "No"))
+
+# Wykres
+ggplot(data_percent, aes(x = Region, y = Percentage, fill=Purchased.Bike)) +
+  geom_col(position = "dodge") +
+  xlab("Region") +
+  ylab("Procentowy udział osób, które kupiły rower") +
+  ggtitle("Zakup roweru według regionu")+
+  scale_fill_manual(values = c("Yes"="green4", "No"="red3"))+
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
@@ -246,19 +273,7 @@ ggplot(data, aes(x = Income.Category, fill = Purchased.Bike)) +
   )
 
 ```
-Aby łatwiej analizować dane, pozwoliłem sobie na wyszczególnienie kilku kategorii Income. Do pewnego momentu, można zauważyć iż wyższy income przekłada się na większy wolumen sprzedaży. Statystycznie patrząc, poza wystrzałem no w grupie 20k-40k, wykres charakteryzuje się rozkładem normalnym. W grupach o wyższych poziomach dochodu, marginalnie więcej mamy decyzji na nie. Zapewne przy wyższych pozioach dochodu, mogą już istnieć inne alternatywy dla roweru zarówno jako środka transportu jak i dla rekreacji.
-#Zmienna Region
-```{r}
-aggregated_data <- data %>%
-  group_by(Region) %>%
-  summarise(Total_Bikes = sum(Purchased.Bike == "Yes"))
-
-ggplot(aggregated_data, aes(x = Region, y = Total_Bikes)) +
-  geom_col(fill = "red") +
-  xlab("Region") +
-  ylab("Liczba osób które kupiły rower") +
-  ggtitle("Zakup roweru w zależności od regionu")
-```
+Najwięcej kupujących było z Ameryki Północnej. Widać tutaj znaczną przewagę osób które nie kupiły roweru. W Europie było mniej więcej tyle samo osób, które zdecydowały się na rower, co tych które go nie nabyły. Z regionu Pacyfiku było więcej osób, które kupiły rower.
 
 #Zmienna Age
 ```{r}
@@ -267,8 +282,16 @@ ggplot(data %>% filter(Purchased.Bike == "Yes"), aes(x = Age)) +
   scale_x_continuous(breaks = seq(20, 80, by = 5), limits = c(20, 80)) +
   xlab("Wiek") +
   ylab("Liczba osób które kupiły rower") +
-  ggtitle("Zakup roweru w zależności od wieku")
+  ggtitle("Zakup roweru według od wieku")
+theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.text = element_text(size = 10, angle = 45, hjust = 1)
+  )
 ```
+Największa liczba osób, które kupiły rower przypada na przedział wiekowy 35-40 lat. W grupie 40-50 jest również stosunkowo dużo kupujących. Po 55-tym roku życia widoczny jest zauważalny spadek zainteresowania kupnem roweru. Dla osób po 65-tym roku życia sprzedaż rowerów jest bardzo niska. Również grupa 25-30 charakteryzuje się niskim poziomem zakupów rowerów.
 
 #Zmienna Home.Owner
 ```{r}
@@ -297,7 +320,7 @@ plot_data <- plot_data %>%
 ggplot(plot_data, aes(x = "", y = percent, fill = purchased)) +
   geom_col() +
   coord_polar("y") +
-  scale_fill_manual(values = c("Tak" = "green", "Nie" = "red")) +
+  scale_fill_manual(values = c("Tak" = "green4", "Nie" = "red3")) +
   labs(
     title = "Proporcja osób POSIADAJĄCYCH dom, które skorzystały ze sklepu",
     fill = "Zakupił rower"
@@ -331,15 +354,14 @@ plot_data <- plot_data %>%
 ggplot(plot_data, aes(x = "", y = percent, fill = purchased)) +
   geom_col() +
   coord_polar("y") +
-  scale_fill_manual(values = c("Tak" = "green", "Nie" = "red")) +
+  scale_fill_manual(values = c("Tak" = "green4", "Nie" = "red3")) +
   labs(
     title = "Proporcja osób NIEPOSIADAJĄCYCH domu, które skorzystały ze sklepu",
-    fill = "Zakupił rower"
+    fill = "Kupił rower"
   ) +
   geom_text(aes(label = label), position = position_stack(vjust = 0.5)) +
   theme_void()
 ```
-
 Na powyższych wykresach można zauważyć, osoby nieposiadające domu delikatnie częściej decydują się na kupno roweru, w stosunku do tych, które deklarują jego posiadanie.
 
 #Zmienna Commute.distance
@@ -353,14 +375,14 @@ plot_data <- data %>%
 ggplot(plot_data, aes(x = Commute.Distance, y = percentage, fill = Purchased.Bike)) +
   geom_col(position = "stack", width = 0.5) +
   scale_y_continuous(labels = scales::percent_format(scale = 1)) +
-  scale_fill_manual(values = c("Yes" = "green", "No" = "red"), labels = c("Yes" = "Tak", "No" = "Nie")) +
+  scale_fill_manual(values = c("Yes" = "green4", "No" = "red3"), labels = c("Yes" = "Tak", "No" = "Nie")) +
   geom_text(aes(label = sprintf("%.1f%%", percentage)), 
             position = position_stack(vjust = 0.75)) +
   labs(
-    title = "Procentowy podział osób, które skorzystały ze sklepu dla każdej podanej odległości dojazdu",
+    title = "Procentowy podział klientów sklepu według odległości dojazdu",
     x = "Odległość dojazdu",
     y = "Procent",
-    fill = "Rower zakupiony"
+    fill = "Kupił rower"
   ) +
   theme_minimal()
 ```
@@ -376,16 +398,15 @@ plot_data <- data %>%
 ggplot(plot_data, aes(x = Cars, y = percentage, fill = Purchased.Bike)) +
   geom_col(position = "stack", width = 0.5) +
   scale_y_continuous(labels = scales::percent_format(scale = 1)) +
-  scale_fill_manual(values = c("Yes" = "green", "No" = "red"), labels = c("Yes" = "Tak", "No" = "Nie")) +
+  scale_fill_manual(values = c("Yes" = "green4", "No" = "red3"), labels = c("Yes" = "Tak", "No" = "Nie")) +
   geom_text(aes(label = sprintf("%.1f%%", percentage)), 
             position = position_stack(vjust = 0.75)) +
   labs(
-    title = "Procentowy podział osób, które skorzystały ze sklepu dla każdej podanej ilości posiadanych samochodów",
+    title = "Procentowy podział klientów sklepu według ilości posiadanych samochodów",
     x = "Ilość posiadanych samochodów",
     y = "Procent",
-    fill = "Rower zakupiony"
+    fill = "Kupił rower"
   ) +
   theme_minimal()
 ```
-
-Taki sam wykres lecz przedstawiający procent osób korzystających ze sklepu z podziałem na ilość posiadanych samochodów posiada już bardziej przewidywalne wyniki. Wraz ze wzrostem ilości posiadanych samochodów przez daną osobę zmniejsza się prawdopodobieństwa kupienia przez nią roweru. Mały wyjątek stanowi ilość trzech posiadanych samochodów, dla której procent osób z zakupionym rowerem jest większa o 2.5%, lecz jest to stosunkowo mała różnica, która nie wpływa na ogólny wniosek analizy tej zmiennej.
+Taki sam wykres lecz przedstawiający procent osób korzystających ze sklepu z podziałem na ilość posiadanych samochodów pokazuje już bardziej przewidywalne wyniki. Wraz ze wzrostem ilości posiadanych samochodów przez daną osobę zmniejsza się prawdopodobieństwo kupienia przez nią roweru. Mały wyjątek stanowi liczba trzech posiadanych samochodów, dla której procent osób z zakupionym rowerem jest większa o 2.5%, lecz jest to stosunkowo mała różnica, która nie wpływa na ogólny wniosek analizy tej zmiennej.
