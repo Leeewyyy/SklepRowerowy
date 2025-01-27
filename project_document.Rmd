@@ -3,6 +3,9 @@ title: "Sklep rowerowy"
 author: "Zuzanna Jasińska (202283), Kacper Bareja, Adam Lewandowski (180355), Jan Gasik"
 #date: "`r Sys.Date()`"
 output: github_document
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -10,28 +13,48 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Wstęp
-Klienci pewnego sklepu rowerowego zostali poproszeni o wypełnienie ankiety, gdzie podawali dane na swój temat (m.in. status cywilny, przychód, liczbę dzieci, płeć, wiek) oraz czy kupili rower. Celem analizy jest znalezienie czynników, które decydują o tym, czy rower zostaje zakupiony.
+
+Klienci pewnego sklepu rowerowego zostali poproszeni o wypełnienie
+ankiety, gdzie podawali dane na swój temat (m.in. status cywilny,
+przychód, liczbę dzieci, płeć, wiek) oraz czy kupili rower. Celem
+analizy jest znalezienie czynników, które decydują o tym, czy rower
+zostaje zakupiony.
 
 ## Dane
-Zbiór danych w pliku *sklep_rowerowy.csv* zawiera szczegółowe informacje na temat 1000 użytkowników z różnych środowisk oraz tego, czy kupują rower z kategoryczną zmienną wyjściową. W zbiorze danych znajdują się pewne wartości NA.
+
+Zbiór danych w pliku *sklep_rowerowy.csv* zawiera szczegółowe informacje
+na temat 1000 użytkowników z różnych środowisk oraz tego, czy kupują
+rower z kategoryczną zmienną wyjściową. W zbiorze danych znajdują się
+pewne wartości NA.
 
 ## Potrzebne biblioteki
+
 Do pracy z danymi użyto następujących bibliotek.
+
 ```{r}
 library(gt)
 library(naniar)
 ```
 
 ### Wczytanie i wizualizacja danych
-W tabeli pokazano 10 pierwszych wierszy zbioru danych. Można zauważyć, że w zbiorze występują brakujące dane.
+
+W tabeli pokazano 10 pierwszych wierszy zbioru danych. Można zauważyć,
+że w zbiorze występują brakujące dane.
+
 ```{r}
 data <- read.csv("sklep_rowerowy.csv", na.strings = c("", "NA"))
 gt(head(data,10))
 ```
 
 # Detekcja brakujących danych
+
 ## Początkowa liczba i proporcje NA
-Na początku sprawdzono ile występuje wartości NA i wartości pełnych w zbiorze danych. Dodatkowo za pomocą funkcji *is.special* sprawdzono czy w zbiorze danych występują inne wartości specjalne. Jeśli takowe znaleziono, zastąpiono je wartościami NA.
+
+Na początku sprawdzono ile występuje wartości NA i wartości pełnych w
+zbiorze danych. Dodatkowo za pomocą funkcji *is.special* sprawdzono czy
+w zbiorze danych występują inne wartości specjalne. Jeśli takowe
+znaleziono, zastąpiono je wartościami NA.
+
 ```{r}
 n_miss(data)
 n_complete(data)
@@ -47,30 +70,43 @@ for(n in colnames(data)){
 summary(data)
 ```
 
-Znaleziono 31 wartości NA. W celu głębszej analizy stworzono tabelę podsumowującą braki dla wszystkich zmiennych.
+Znaleziono 31 wartości NA. W celu głębszej analizy stworzono tabelę
+podsumowującą braki dla wszystkich zmiennych.
+
 ```{r}
 miss_var_summary(data)
 ```
 
-Brakujące dane znajdują się w kolumnach: *cars*, *children*, *age*, *income*.
+Brakujące dane znajdują się w kolumnach: *cars*, *children*, *age*,
+*income*.
 
-Warto również dowiedzieć się ile wierszy zawiera wartości NA. Poniższy kod tworzy tabelę pokazującą liczbę wierszy zawierających daną liczbę braków.
+Warto również dowiedzieć się ile wierszy zawiera wartości NA. Poniższy
+kod tworzy tabelę pokazującą liczbę wierszy zawierających daną liczbę
+braków.
+
 ```{r}
 miss_case_table(data)
 ```
-97% wierszy jest kompletna. 27 wierszy ma jedną wartość NA. Dwa braki mają 2 wiersze.
 
-#wizualizacja brakujących wartości
+97% wierszy jest kompletna. 27 wierszy ma jedną wartość NA. Dwa braki
+mają 2 wiersze.
+
+##Wizualizacja brakujących wartości
+
 ```{r}
 library(naniar)
 vis_miss(data)
 ```
-Wizualizacja całego zbioru danych wykazała nieiwlką, brakującą wartość w wysokości 0,2%
+
+Wizualizacja całego zbioru danych wykazała nieiwlką, brakującą wartość w
+wysokości 0,2%
 
 ```{r}
 gg_miss_var(data)
 ```
-Dzięki tej funkcji stworzyliśmy wykres słupkowy pokazujący liczbę brakujących wartości dla każdej zmiennej
+
+Dzięki tej funkcji stworzyliśmy wykres słupkowy pokazujący liczbę
+brakujących wartości dla każdej zmiennej
 
 ```{r}
 
@@ -79,25 +115,29 @@ library(naniar)
 View(data)
 ```
 
-
-
 ```{r}
 data_non_vis <- data
 gg_miss_upset(data, nsets=12)
 ```
-### opis danych
 
-najwięcej danych odstających (bezwzględnie) widnieje dla zmiennych Cars_NA, Children_NA i Age_NA (tj. poziome słupki)
+### Opis danych
 
-int. kolumna 1: jest dokładnie 9 obserwacji w których wiersz Cars_NA ma wartość NA
-int. kolumna 2: jest dokładnie 7 obserwacji w których wiersz Children_NA ma wartość NA
-int. Kolumna 3: jest dokładnie 6 obserwacji w których wiersz Age_NA ma wartość NA
-int. kolumna 4: jest dokładnie 5 obserwacji w których wiersz Income_NA ma wartość NA
-int. kolumna 5: jest dokładnie 1 obserwacji w których wiersze Income_NA i Age_NA ma wartość NA
-int. kolumna 6: jest dokładnie 1 obserwacji w których wiersz Age_NA i Chindren_NA ma wartość 1
+Najwięcej danych odstających (bezwzględnie) widnieje dla zmiennych
+Cars_NA, Children_NA i Age_NA (tj. poziome słupki)
 
+int. kolumna 1: jest dokładnie 9 obserwacji w których wiersz Cars_NA ma
+wartość NA int. kolumna 2: jest dokładnie 7 obserwacji w których wiersz
+Children_NA ma wartość NA int. Kolumna 3: jest dokładnie 6 obserwacji w
+których wiersz Age_NA ma wartość NA int. kolumna 4: jest dokładnie 5
+obserwacji w których wiersz Income_NA ma wartość NA int. kolumna 5: jest
+dokładnie 1 obserwacji w których wiersze Income_NA i Age_NA ma wartość
+NA int. kolumna 6: jest dokładnie 1 obserwacji w których wiersz Age_NA i
+Chindren_NA ma wartość 1
 
-Podejmiemy teraz próbę analizy zależności tych braków między sobą. Zacznijmy od zbadania zależności zmiennej cars, gdyż ma ona najwięcej wartości NA. Wyznaczymy wykres zależności w stosunku do zmiennych Income oraz Age.
+Podejmiemy teraz próbę analizy zależności tych braków między sobą.
+Zacznijmy od zbadania zależności zmiennej cars, gdyż ma ona najwięcej
+wartości NA. Wyznaczymy wykres zależności w stosunku do zmiennych Income
+oraz Age.
 
 ```{r}
 library("tidyverse")
@@ -108,7 +148,12 @@ ggplot(data = data, aes(x = Cars, y = Income)) +
   theme_minimal()
 ```
 
-Gdyby nie jedna obserwacja można by przyjąć, że brak danych w zmeinnej Cars zależy od zmiennej Income (osoby, które podały niski Income nie podają zmiennej Cars). Jednak mamy jedną obserwację, dla której zmienna Income ma wysoką wartość, a Cars pozostaje NA. Dla najwyższych wartości Cars (3 i 4) nie zauważamy wartości NA w zmiennej Income, możemy więc przyjąć, że istnieje pewna zależność między tymi dwoma zmiennymi.
+Gdyby nie jedna obserwacja można by przyjąć, że brak danych w zmeinnej
+Cars zależy od zmiennej Income (osoby, które podały niski Income nie
+podają zmiennej Cars). Jednak mamy jedną obserwację, dla której zmienna
+Income ma wysoką wartość, a Cars pozostaje NA. Dla najwyższych wartości
+Cars (3 i 4) nie zauważamy wartości NA w zmiennej Income, możemy więc
+przyjąć, że istnieje pewna zależność między tymi dwoma zmiennymi.
 
 ```{r}
 ggplot(data = data, aes(x = Cars, y = Age)) + 
@@ -118,9 +163,12 @@ ggplot(data = data, aes(x = Cars, y = Age)) +
   theme_minimal()
 ```
 
-Dla zmeinnej Age sytuacja wygląda tak samo - osoby z różnym wiekiem nie podały ilości samochodów, jak i osoby z różną ilością samocodów nie podały wieku.
+Dla zmeinnej Age sytuacja wygląda tak samo - osoby z różnym wiekiem nie
+podały ilości samochodów, jak i osoby z różną ilością samocodów nie
+podały wieku.
 
-Pod analizę poddamy teraz zmienną Age i jej zależność ze zmiennymi Children i Income.
+Pod analizę poddamy teraz zmienną Age i jej zależność ze zmiennymi
+Children i Income.
 
 ```{r}
 ggplot(data = data, aes(x = Age, y = Children)) + 
@@ -135,13 +183,20 @@ ggplot(data = data, aes(x = Age, y = Income)) +
   theme_minimal()
 ```
 
-Dla zmiennych Age i Children nie zaobserwowaliśmy żadnych zależności. Można tylko zauważyć, że istnieje jedna obserwacja dla których obie zmienne mają wartość NA.
-Inaczej sytuacja wygląda dla zmiennych Age i Income. Możemy tutaj zaobserwować, że tylko osoby z niską wartością zmiennej Income nie podały danych dla Age, jak i tylko osoby z niskim wiekiem nie podały swojego Income. Występuje również jedna sytuacja, w której obie zmienne nie mają podanej wartości.
+Dla zmiennych Age i Children nie zaobserwowaliśmy żadnych zależności.
+Można tylko zauważyć, że istnieje jedna obserwacja dla których obie
+zmienne mają wartość NA. Inaczej sytuacja wygląda dla zmiennych Age i
+Income. Możemy tutaj zaobserwować, że tylko osoby z niską wartością
+zmiennej Income nie podały danych dla Age, jak i tylko osoby z niskim
+wiekiem nie podały swojego Income. Występuje również jedna sytuacja, w
+której obie zmienne nie mają podanej wartości.
 
-Pozostałe kombinacje zmiennej nie przedstawiają żadnych zależności między sobą.
+Pozostałe kombinacje zmiennej nie przedstawiają żadnych zależności
+między sobą.
 
-
-Analiza brakujących danych (NA) w zbiorze oraz ich uzupełnienie odpowiednimi wartościami. Celem jest uzyskanie kompletnego zbioru danych, który będzie gotowy do dalszej analizy.
+Analiza brakujących danych (NA) w zbiorze oraz ich uzupełnienie
+odpowiednimi wartościami. Celem jest uzyskanie kompletnego zbioru
+danych, który będzie gotowy do dalszej analizy.
 
 ```{r}
 library("VIM")
@@ -149,11 +204,13 @@ library("tidyverse")
 ```
 
 Użycie funkcji hotdeck dla zmiennych z wartościami NA:
+
 ```{r}
 data <- hotdeck(data = data, variable = c("Cars", "Age", "Income", "Children", "Gender", "Marital.Status", "Home.Owner"))
 
 colSums(is.na(data))
 ```
+
 Dla powyższych zmiennych wartości NA nie występują.
 
 ```{r}
@@ -173,16 +230,26 @@ summary(data$Children)
 ```{r}
 print(data)
 ```
-W przeprowadzonej analizie zidentyfikowane zostały braki danych (NA) w zmiennych "Cars", "Age", "Income", "Children", "Gender", "Marital.Status", "Home.Owner", przy czym najwięcej braków dotyczyło zmiennej Cars (aż 9 obserwacji). Wizualizacja wykazała zależność między brakami w zmiennej Cars a niskimi wartościami Income, a także podobną relację dla zmiennej Age. Braki zostały uzupełnione metodą Hot Deck. W rezultacie uzyskano kompletny zbiór danych, który jest gotowy do dalszej analizy statystycznej lub modelowania.
 
-###Wizualizacja Danych
+W przeprowadzonej analizie zidentyfikowane zostały braki danych (NA) w
+zmiennych "Cars", "Age", "Income", "Children", "Gender",
+"Marital.Status", "Home.Owner", przy czym najwięcej braków dotyczyło
+zmiennej Cars (aż 9 obserwacji). Wizualizacja wykazała zależność między
+brakami w zmiennej Cars a niskimi wartościami Income, a także podobną
+relację dla zmiennej Age. Braki zostały uzupełnione metodą Hot Deck. W
+rezultacie uzyskano kompletny zbiór danych, który jest gotowy do dalszej
+analizy statystycznej lub modelowania.
+
+#Wizualizacja Danych
 
 ```{r}
 install.packages('ggplot2')
 library(ggplot2)
 View(data)
 ```
-#Zmienna Martial.Status
+
+##Zmienna Martial.Status
+
 ```{r}
 ggplot(data, aes(x = Marital.Status, fill = Purchased.Bike)) +
   geom_bar(position = "dodge", color = "black", size = 0.3) +
@@ -198,9 +265,15 @@ ggplot(data, aes(x = Marital.Status, fill = Purchased.Bike)) +
     axis.text = element_text(size = 10)
   )
 ```
-Na analizowanym wykresie, możemy zauważyć, iż to single częściej decydują się na zakup rowerów, prównując bezwzględnie w stosunku do żonatych/zamężnych. Większość osób w związku małżeńskim nie deccyduje się na zakup rowerów. Liczba osób, o których nie mamy danych o ich stanie cywilnym jest marginalna i nie ma wpływu na całokształt analizy.
 
-#Zmienna Gender
+Na analizowanym wykresie, możemy zauważyć, iż to single częściej
+decydują się na zakup rowerów, prównując bezwzględnie w stosunku do
+żonatych/zamężnych. Większość osób w związku małżeńskim nie deccyduje
+się na zakup rowerów. Liczba osób, o których nie mamy danych o ich
+stanie cywilnym jest marginalna i nie ma wpływu na całokształt analizy.
+
+##Zmienna Gender
+
 ```{r}
 ggplot(data, aes(x = Gender, fill = Purchased.Bike)) +
   geom_bar(position = "dodge", color = "black", size = 0.3) +
@@ -216,9 +289,14 @@ ggplot(data, aes(x = Gender, fill = Purchased.Bike)) +
     axis.text = element_text(size = 10)
   )
 ```
-Z powyższego wykresu, ciężko wysunąć jednoznaczne wnioski. Obie statystyki zarówno dla mężczyzn jak i kobiet wyglądają dość tożsamo. W obu płciach delikatnie dominuje decyzja o braku zakupu roweru. Bezwzględnie to więcej mężczyzn nie kupiło roweru.
 
-#Zmienna Income
+Z powyższego wykresu, ciężko wysunąć jednoznaczne wnioski. Obie
+statystyki zarówno dla mężczyzn jak i kobiet wyglądają dość tożsamo. W
+obu płciach delikatnie dominuje decyzja o braku zakupu roweru.
+Bezwzględnie to więcej mężczyzn nie kupiło roweru.
+
+##Zmienna Income
+
 ```{r}
 # Tworzenie nowych kategorii dochodów
 data$Income.Category <- cut(data$Income, 
@@ -241,9 +319,18 @@ ggplot(data, aes(x = Income.Category, fill = Purchased.Bike)) +
     axis.text = element_text(size = 10, angle = 45, hjust = 1)
   )
 ```
-Aby łatwiej analizować dane, pozwoliłem sobie na wyszczególnienie kilku kategorii Income. Do pewnego momentu, można zauważyć iż wyższy dochód przekłada się na większą sprzedaż. Analizując statystycznie, poza wyraźnym wzrostem w grupie dochodowej 20k-40k, wykres wykazuje cechy rozkładu normalnego. W grupach o wyższych poziomach dochodu, marginalnie więcej mamy decyzji na nie. Zapewne przy wyższych poziomach dochodu, mogą już istnieć inne alternatywy dla roweru zarówno jako środka transportu jak i dla rekreacji.
 
-#Zmienna Region
+Aby łatwiej analizować dane, pozwoliłem sobie na wyszczególnienie kilku
+kategorii Income. Do pewnego momentu, można zauważyć iż wyższy dochód
+przekłada się na większą sprzedaż. Analizując statystycznie, poza
+wyraźnym wzrostem w grupie dochodowej 20k-40k, wykres wykazuje cechy
+rozkładu normalnego. W grupach o wyższych poziomach dochodu, marginalnie
+więcej mamy decyzji na nie. Zapewne przy wyższych poziomach dochodu,
+mogą już istnieć inne alternatywy dla roweru zarówno jako środka
+transportu jak i dla rekreacji.
+
+##Zmienna Region
+
 ```{r}
 # Obliczenie procentów
 data_percent <- data %>%
@@ -273,9 +360,14 @@ ggplot(data_percent, aes(x = Region, y = Percentage, fill=Purchased.Bike)) +
   )
 
 ```
-Najwięcej kupujących było z Ameryki Północnej. Widać tutaj znaczną przewagę osób które nie kupiły roweru. W Europie było mniej więcej tyle samo osób, które zdecydowały się na rower, co tych które go nie nabyły. Z regionu Pacyfiku było więcej osób, które kupiły rower.
 
-#Zmienna Age
+Najwięcej kupujących było z Ameryki Północnej. Widać tutaj znaczną
+przewagę osób które nie kupiły roweru. W Europie było mniej więcej tyle
+samo osób, które zdecydowały się na rower, co tych które go nie nabyły.
+Z regionu Pacyfiku było więcej osób, które kupiły rower.
+
+##Zmienna Age
+
 ```{r}
 ggplot(data %>% filter(Purchased.Bike == "Yes"), aes(x = Age)) +
   geom_bar(fill = "black") +
@@ -291,9 +383,16 @@ theme_minimal() +
     axis.text = element_text(size = 10, angle = 45, hjust = 1)
   )
 ```
-Największa liczba osób, które kupiły rower przypada na przedział wiekowy 35-40 lat. W grupie 40-50 jest również stosunkowo dużo kupujących. Po 55-tym roku życia widoczny jest zauważalny spadek zainteresowania kupnem roweru. Dla osób po 65-tym roku życia sprzedaż rowerów jest bardzo niska. Również grupa 25-30 charakteryzuje się niskim poziomem zakupów rowerów.
 
-#Zmienna Home.Owner
+Największa liczba osób, które kupiły rower przypada na przedział wiekowy
+35-40 lat. W grupie 40-50 jest również stosunkowo dużo kupujących. Po
+55-tym roku życia widoczny jest zauważalny spadek zainteresowania kupnem
+roweru. Dla osób po 65-tym roku życia sprzedaż rowerów jest bardzo
+niska. Również grupa 25-30 charakteryzuje się niskim poziomem zakupów
+rowerów.
+
+##Zmienna Home.Owner
+
 ```{r}
 data_summary_for_pie_plot_home_owners <- data %>%
   filter(Home.Owner == "Yes") %>%
@@ -362,9 +461,13 @@ ggplot(plot_data, aes(x = "", y = percent, fill = purchased)) +
   geom_text(aes(label = label), position = position_stack(vjust = 0.5)) +
   theme_void()
 ```
-Na powyższych wykresach można zauważyć, osoby nieposiadające domu delikatnie częściej decydują się na kupno roweru, w stosunku do tych, które deklarują jego posiadanie.
 
-#Zmienna Commute.distance
+Na powyższych wykresach można zauważyć, osoby nieposiadające domu
+delikatnie częściej decydują się na kupno roweru, w stosunku do tych,
+które deklarują jego posiadanie.
+
+##Zmienna Commute.distance
+
 ```{r}
 plot_data <- data %>%
   group_by(Commute.Distance, Purchased.Bike) %>%
@@ -386,9 +489,16 @@ ggplot(plot_data, aes(x = Commute.Distance, y = percentage, fill = Purchased.Bik
   ) +
   theme_minimal()
 ```
-Powyższy wykres przedstawia ciekawe zjawisko. Naturalnie mogłoby się wydawać, że najrzadziej kupią rower osoby posiadające najdłuższą oraz najkrótszą drogę dojazdową. Tymczasem dane przedstawiają, że faktycznie najwięcej osób posiadających średniej długości drogę (2-5 mili) decyduje się na kupno roweru, lecz na drugim miejscu znajdują się osoby z długością tylko 0-1 mili.
 
-#Zmienna Cars
+Powyższy wykres przedstawia ciekawe zjawisko. Naturalnie mogłoby się
+wydawać, że najrzadziej kupią rower osoby posiadające najdłuższą oraz
+najkrótszą drogę dojazdową. Tymczasem dane przedstawiają, że faktycznie
+najwięcej osób posiadających średniej długości drogę (2-5 mili) decyduje
+się na kupno roweru, lecz na drugim miejscu znajdują się osoby z
+długością tylko 0-1 mili.
+
+##Zmienna Cars
+
 ```{r}
 plot_data <- data %>%
   group_by(Cars, Purchased.Bike) %>%
@@ -409,4 +519,57 @@ ggplot(plot_data, aes(x = Cars, y = percentage, fill = Purchased.Bike)) +
   ) +
   theme_minimal()
 ```
-Taki sam wykres lecz przedstawiający procent osób korzystających ze sklepu z podziałem na ilość posiadanych samochodów pokazuje już bardziej przewidywalne wyniki. Wraz ze wzrostem ilości posiadanych samochodów przez daną osobę zmniejsza się prawdopodobieństwo kupienia przez nią roweru. Mały wyjątek stanowi liczba trzech posiadanych samochodów, dla której procent osób z zakupionym rowerem jest większa o 2.5%, lecz jest to stosunkowo mała różnica, która nie wpływa na ogólny wniosek analizy tej zmiennej.
+
+Taki sam wykres lecz przedstawiający procent osób korzystających ze
+sklepu z podziałem na ilość posiadanych samochodów pokazuje już bardziej
+przewidywalne wyniki. Wraz ze wzrostem ilości posiadanych samochodów
+przez daną osobę zmniejsza się prawdopodobieństwo kupienia przez nią
+roweru. Mały wyjątek stanowi liczba trzech posiadanych samochodów, dla
+której procent osób z zakupionym rowerem jest większa o 2.5%, lecz jest
+to stosunkowo mała różnica, która nie wpływa na ogólny wniosek analizy
+tej zmiennej.
+
+# Analiza opisowa
+## Wiek
+```{r}
+purchased_data <- data[data$Purchased.Bike==1, ]
+purchased_data%>%
+  summarize('Średnia' = mean(Age),
+            'Mediana' = median(Age),
+            'Minimum' = min(Age),
+            'Maksimum' = max(Age),
+            'Odchylenie standardowe' = sd(Age))%>%
+  pivot_longer(
+    cols = everything()
+  )%>%
+  mutate(name=cell_spec(name, bold = TRUE))%>%
+  kbl(escape=FALSE,col.names = NULL)%>%
+    add_header_above(c("WIEK OSÓB KTÓRE KUPIŁY ROWER" = 2))%>%
+  kable_styling(bootstrap_options=c("striped", "hover", "responsive"), position="center")
+```
+Osoby kupujące rower mają średnio prawie 43 lata. Najmłodszy kupujący miał 25 lat, a najstarszy 78. Odchylenie standardowe wyniosło nieco ponad 10 lat, co oznacza umiarkowane zróżnicownie wieku wśród klientów.
+
+```{r}
+purchased_data%>%
+  group_by(Gender)%>%
+  summarize('Średnia wieku' = mean(Age),
+            'Mediana wieku' = median(Age),
+            'Minimalny wiek' = min(Age),
+            'Maksymalny wiek' = max(Age),
+            'Odchylenie standardowe wieku' = sd(Age))%>%
+  arrange(desc('Suma zakupionych rowerów'))%>%
+  kbl()%>%
+  kable_styling(bootstrap_options=c("striped", "hover", "responsive"), position="center")
+```
+Statystyki wieku z podziałem na płeć są podobne. Można wyciągnąć wniosek, że płeć nie ma znaczenia w konteście wieku dla kupujących. 
+
+## Korelacja pomiędzy zmiennymi numerycznymi
+```{r}
+corr <- cor(data[c("Income", "Age", "Children")], method = "pearson")
+corrplot(corr, method = "number", type = "upper", diag =FALSE)
+```
+Pomiędzy przychodem, a wiekiem zachodzi słaba korelacja dodatnia. Oznacza to, że w miarę wieku dochód nieznacznie rośnie, ale ta zależność jest dość słaba, można przyjąć, że nieznaczna.
+
+Między przychodem, a liczbą dzieci również zachodzi słaba korelacja dodatnia. Osoby z wyższym dochodem mogą mieć nieco więcej dzieci, ale jest to także relacja słaba, co sugeruje, że dochód ma niewielki wpływ na liczbę dzieci w analizowanej grupie.
+
+Istnieje średnia dodatnia korelacja między wiekiem a liczbą dzieci. W miarę jak wiek rośnie, liczba dzieci również rośnie. Wartość 0.5195 wskazuje na wyraźniejszy związek, co może sugerować, że starsze osoby mogą mieć więcej dzieci.
