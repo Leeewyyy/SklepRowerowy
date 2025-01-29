@@ -577,7 +577,11 @@ Biorąc pod uwagę, że zmienne Martial.Status i Gender, to zmienne jakościowe,
 Analizując zmienną Gender, możemy także zbadać ilość kobiet i mężczyzn w grupie. Osoby płci męskiej lekko dominują, ponieważ ich udział w próbie wynosi 50,55%.
 ## Wiek
 ```{r}
-purchased_data <- data[data$Purchased.Bike==1, ]
+library(kableExtra)
+library(dplyr)
+library(tidyr)
+
+purchased_data <- data[data$Purchased.Bike=="Yes", ]
 purchased_data%>%
   summarize('Średnia' = mean(Age),
             'Mediana' = median(Age),
@@ -589,7 +593,7 @@ purchased_data%>%
   )%>%
   mutate(name=cell_spec(name, bold = TRUE))%>%
   kbl(escape=FALSE,col.names = NULL)%>%
-    add_header_above(c("WIEK OSÓB KTÓRE KUPIŁY ROWER" = 2))%>%
+  add_header_above(c("WIEK OSÓB KTÓRE KUPIŁY ROWER" = 2))%>%
   kable_styling(bootstrap_options=c("striped", "hover", "responsive"), position="center")
 ```
 Osoby kupujące rower mają średnio prawie 43 lata. Najmłodszy kupujący miał 25 lat, a najstarszy 78. Odchylenie standardowe wyniosło nieco ponad 10 lat, co oznacza umiarkowane zróżnicownie wieku wśród klientów.
