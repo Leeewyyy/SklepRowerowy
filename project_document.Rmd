@@ -530,6 +530,51 @@ to stosunkowo mała różnica, która nie wpływa na ogólny wniosek analizy
 tej zmiennej.
 
 # Analiza opisowa
+
+#income
+```{r}
+
+# Statystyki opisowe dla Income
+Income <- data$Income
+income_stats <- list(
+  count = length(Income),
+  mean = mean(Income, na.rm = TRUE),
+  sd = sd(Income, na.rm = TRUE),
+  min = min(Income, na.rm = TRUE),
+  max = max(Income, na.rm = TRUE),
+  median = median(Income, na.rm = TRUE)
+)
+list(income_stats = income_stats)
+```
+Mediana dochodu (środkowa) wynosi 60000tys. USD rocznie. Osoba z najmniejszym dochodem w skali roku zarabia 1000tys, USD rocznie, a osoba z największym dochodem zarabia 170 000tys. USD rocznie. Średnio, osoby w próbce zarabiają 56267,61tys. USD w skali roku. Dodatkowo odchylenie dochodów od tej średniej wynosi 31067,82 tys. USD w skali roku.
+## Gender 
+
+```{r}
+# Statystyki dla Gender (binarnie)
+Gender <- data$Gender
+gender_stats <- table(Gender)
+gender_percentage <- prop.table(gender_stats) * 100
+
+# Wyniki
+list(gender_stats = gender_stats,
+  gender_percentage = gender_percentage)
+```
+
+##Martial.Status
+
+```{r}
+# Statystyki dla Marital.Status 
+Marital.Status <- data$Marital.Status
+marital_status_stats <- table(Marital.Status)
+marital_status_percentage <- prop.table(marital_status_stats) * 100
+
+# Wyniki
+list(marital_status_stats = marital_status_stats,
+  marital_status_percentage = marital_status_percentage)
+```
+
+Biorąc pod uwagę, że zmienne Martial.Status i Gender, to zmienne jakościowe, cieżko jest policzyć statystyki opisowe, ponieważ dane nie są liczbowe. Można natomiast zauważyć iż w zmiennej martial.status dominują osoby będące w związku małżeńskim, które stanowią niemal 54% próby.
+Analizując zmienną Gender, możemy także zbadać ilość kobiet i mężczyzn w grupie. Osoby płci męskiej lekko dominują, ponieważ ich udział w próbie wynosi 50,55%.
 ## Wiek
 ```{r}
 purchased_data <- data[data$Purchased.Bike==1, ]
