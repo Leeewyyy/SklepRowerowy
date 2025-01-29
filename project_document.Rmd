@@ -618,3 +618,51 @@ Pomiędzy przychodem, a wiekiem zachodzi słaba korelacja dodatnia. Oznacza to, 
 Między przychodem, a liczbą dzieci również zachodzi słaba korelacja dodatnia. Osoby z wyższym dochodem mogą mieć nieco więcej dzieci, ale jest to także relacja słaba, co sugeruje, że dochód ma niewielki wpływ na liczbę dzieci w analizowanej grupie.
 
 Istnieje średnia dodatnia korelacja między wiekiem a liczbą dzieci. W miarę jak wiek rośnie, liczba dzieci również rośnie. Wartość 0.5195 wskazuje na wyraźniejszy związek, co może sugerować, że starsze osoby mogą mieć więcej dzieci.
+
+# Wnioskowanie statystyczne
+## Testy Chi-kwardrat zmiennych kategorycznych
+Aby sprawdzić istotność zmiennych kategorycznych dla do testów wszystkich zmiennych postawiono tezę H0: "Zmienna nie ma wpływu na decyzję o zakupie roweru", w opozycji do H1: "Zmienna ma wpływ na decyzję o zakupie roweru".
+```{r}
+library(ggstatsplot)
+
+categorical_vars <-c("Marital.Status","Gender","Education","Occupation", "Home.Owner", "Commute.Distance", "Region") # Lista zmiennych kategorycznych
+data[] <- lapply(data, function(x) if(is.character(x)) as.factor(x) else x)
+
+for (var in categorical_vars) {
+  print(ggbarstats(
+    data = data, 
+    x = !!sym(var),
+    y = Purchased.Bike,
+    results.subtitle = TRUE
+  ))
+}
+```
+
+```{r, echo=FALSE}
+library(ggplot2)
+
+#Wykonanie testu Chi-kwadrat
+chi_square_results <- sapply(categorical_vars, function(var) {
+  test_result <- chisq.test(table(data[[var]], data$Purchased.Bike))
+  return(test_result$p.value) # Zwracamy wartość p
+})
+
+chi_square_df <- data.frame(Variable = categorical_vars, P_Value = chi_square_results)
+
+# Zaznacz zmienne istotne (p < 0.05)
+chi_square_df$Significant <- chi_square_df$P_Value < 0.05
+
+# Wykres
+ggplot(chi_square_df, aes(x = Variable, y = P_Value, fill = Significant)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  geom_point(aes(color = Significant), size = 3, position = position_dodge(width = 0.75)) +
+  scale_y_continuous(trans = 'log10') +  
+  labs(title = "Test chi-kwadrart - wartości p dla zmiennych",
+       y = "P-Value",
+       x = "Zmienna") +
+  theme_minimal() +
+  scale_fill_manual(values = c("red", "green")) +
+  scale_color_manual(values = c("red", "green"))
+```
+
+Istotne w decyzji o zakupie roweru, czyli tam, gdzie wartość p-value wyniosła mniej niż 0.05 okazały się zmienne: Commute.Distance, Education, Marital.Status, Region. Nieistotynymi czynnikami przy zakupie roweru są płeć, posiadanie domu i zawód.
