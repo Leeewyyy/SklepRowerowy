@@ -6,10 +6,12 @@ output: github_document
 editor_options: 
   markdown: 
     wrap: 72
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+options(repos = c(CRAN = "https://cran.r-project.org"))
 ```
 
 # Wstęp
@@ -31,9 +33,17 @@ pewne wartości NA.
 
 Do pracy z danymi użyto następujących bibliotek.
 
-```{r}
+```{r message=FALSE}
 library(gt)
 library(naniar)
+library(tidyverse)
+library(VIM)
+library(ggplot2)
+library(kableExtra)
+library(dplyr)
+library(tidyr)
+library(corrplot)
+library(ggstatsplot)
 ```
 
 ### Wczytanie i wizualizacja danych
@@ -62,8 +72,11 @@ n_complete(data)
 is.special <- function(x){
   if(is.numeric(x)) !is.finite(x) else is.na(x)
 }
+```
+```{r results='hide'} 
 sapply(data, is.special)
-
+```
+```{r}
 for(n in colnames(data)){
   is.na(data[[n]]) <- is.special(data[[n]])
 }
@@ -94,7 +107,6 @@ mają 2 wiersze.
 ##Wizualizacja brakujących wartości
 
 ```{r}
-library(naniar)
 vis_miss(data)
 ```
 
@@ -107,13 +119,6 @@ gg_miss_var(data)
 
 Dzięki tej funkcji stworzyliśmy wykres słupkowy pokazujący liczbę
 brakujących wartości dla każdej zmiennej
-
-```{r}
-
-library(gt)
-library(naniar)
-View(data)
-```
 
 ```{r}
 data_non_vis <- data
@@ -140,7 +145,6 @@ wartości NA. Wyznaczymy wykres zależności w stosunku do zmiennych Income
 oraz Age.
 
 ```{r}
-library("tidyverse")
 ggplot(data = data, aes(x = Cars, y = Income)) + 
   geom_point() +
   geom_miss_point() +
@@ -198,11 +202,6 @@ Analiza brakujących danych (NA) w zbiorze oraz ich uzupełnienie
 odpowiednimi wartościami. Celem jest uzyskanie kompletnego zbioru
 danych, który będzie gotowy do dalszej analizy.
 
-```{r}
-library("VIM")
-library("tidyverse")
-```
-
 Użycie funkcji hotdeck dla zmiennych z wartościami NA:
 
 ```{r}
@@ -227,10 +226,6 @@ print("Children:")
 summary(data$Children)
 ```
 
-```{r}
-print(data)
-```
-
 W przeprowadzonej analizie zidentyfikowane zostały braki danych (NA) w
 zmiennych "Cars", "Age", "Income", "Children", "Gender",
 "Marital.Status", "Home.Owner", przy czym najwięcej braków dotyczyło
@@ -241,12 +236,6 @@ rezultacie uzyskano kompletny zbiór danych, który jest gotowy do dalszej
 analizy statystycznej lub modelowania.
 
 #Wizualizacja Danych
-
-```{r}
-install.packages('ggplot2')
-library(ggplot2)
-View(data)
-```
 
 ##Zmienna Martial.Status
 
@@ -374,7 +363,7 @@ ggplot(data %>% filter(Purchased.Bike == "Yes"), aes(x = Age)) +
   scale_x_continuous(breaks = seq(20, 80, by = 5), limits = c(20, 80)) +
   xlab("Wiek") +
   ylab("Liczba osób które kupiły rower") +
-  ggtitle("Zakup roweru według od wieku")
+  ggtitle("Zakup roweru według od wieku") +
 theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
@@ -577,10 +566,6 @@ Biorąc pod uwagę, że zmienne Martial.Status i Gender, to zmienne jakościowe,
 Analizując zmienną Gender, możemy także zbadać ilość kobiet i mężczyzn w grupie. Osoby płci męskiej lekko dominują, ponieważ ich udział w próbie wynosi 50,55%.
 ## Wiek
 ```{r}
-library(kableExtra)
-library(dplyr)
-library(tidyr)
-
 purchased_data <- data[data$Purchased.Bike=="Yes", ]
 purchased_data%>%
   summarize('Średnia' = mean(Age),
@@ -612,6 +597,32 @@ purchased_data%>%
 ```
 Statystyki wieku z podziałem na płeć są podobne. Można wyciągnąć wniosek, że płeć nie ma znaczenia w konteście wieku dla kupujących. 
 
+##cars
+```{r}
+cars_purchased <- data[data$Purchased.Bike=="Yes", ]
+cars_not_purchased <- data[data$Purchased.Bike=="No", ]
+cars_purchased %>%
+  summarize('Średnia' = mean(Cars)) %>%
+  pivot_longer(
+    cols = everything()
+  ) %>%
+  mutate(name=cell_spec(name, bold = TRUE))%>%
+  kbl(escape=FALSE,col.names = NULL)%>%
+  add_header_above(c("ŚREDNIA ILOŚĆ SAMOCHODÓW OSOB, KTÓRE KUPIŁY ROWER" = 2))%>%
+  kable_styling(bootstrap_options=c("striped", "hover", "responsive"), position="center")
+cars_not_purchased %>%
+  summarize('Średnia' = mean(Cars)) %>%
+  pivot_longer(
+    cols = everything()
+  ) %>%
+  mutate(name=cell_spec(name, bold = TRUE))%>%
+  kbl(escape=FALSE,col.names = NULL)%>%
+  add_header_above(c("ŚREDNIA ILOŚĆ SAMOCHODÓW OSOB, KTÓRE NIE KUPIŁY ROWERU" = 2))%>%
+  kable_styling(bootstrap_options=c("striped", "hover", "responsive"), position="center")
+```
+Po uzyskaniu średniej ilości posiadanych samochodów klientów sklepu, możemy zauważyć zależność, że im więcej samochodów posiada klient tym jest mniejsze prawdopodobieństwo, że kupi rower. Wskazuje na to znaczna różnica pomiędzy obiema grupami - 1.67 samochodu u osób, które roweru nie kupiło, a tylko 1.23 samochodu u osób, które rower kupiły.
+
+
 ## Korelacja pomiędzy zmiennymi numerycznymi
 ```{r}
 corr <- cor(data[c("Income", "Age", "Children")], method = "pearson")
@@ -623,12 +634,11 @@ Między przychodem, a liczbą dzieci również zachodzi słaba korelacja dodatni
 
 Istnieje średnia dodatnia korelacja między wiekiem a liczbą dzieci. W miarę jak wiek rośnie, liczba dzieci również rośnie. Wartość 0.5195 wskazuje na wyraźniejszy związek, co może sugerować, że starsze osoby mogą mieć więcej dzieci.
 
+
 # Wnioskowanie statystyczne
 ## Testy Chi-kwardrat zmiennych kategorycznych
 Aby sprawdzić istotność zmiennych kategorycznych dla do testów wszystkich zmiennych postawiono tezę H0: "Zmienna nie ma wpływu na decyzję o zakupie roweru", w opozycji do H1: "Zmienna ma wpływ na decyzję o zakupie roweru".
 ```{r}
-library(ggstatsplot)
-
 categorical_vars <-c("Marital.Status","Gender","Education","Occupation", "Home.Owner", "Commute.Distance", "Region") # Lista zmiennych kategorycznych
 data[] <- lapply(data, function(x) if(is.character(x)) as.factor(x) else x)
 
@@ -643,8 +653,6 @@ for (var in categorical_vars) {
 ```
 
 ```{r, echo=FALSE}
-library(ggplot2)
-
 #Wykonanie testu Chi-kwadrat
 chi_square_results <- sapply(categorical_vars, function(var) {
   test_result <- chisq.test(table(data[[var]], data$Purchased.Bike))
@@ -670,3 +678,15 @@ ggplot(chi_square_df, aes(x = Variable, y = P_Value, fill = Significant)) +
 ```
 
 Istotne w decyzji o zakupie roweru, czyli tam, gdzie wartość p-value wyniosła mniej niż 0.05 okazały się zmienne: Commute.Distance, Education, Marital.Status, Region. Nieistotynymi czynnikami przy zakupie roweru są płeć, posiadanie domu i zawód.
+
+
+Wykonajmy teraz test ANOVA, aby sprawdzić wpływ wykształcenia na dochód w naszych danych.
+
+```{r}
+#Wykonanie testu ANOVA
+
+anova_result <- aov(Income ~ Education, data = data)
+summary(anova_result)
+```
+
+Powyższe zestawienie wskazuje, że wykształcenie ma istotny wływ na dochód, oraz że efekt tego wykształcenia jest silny (F = 22.85). Niska wartość p-value wskazuje również, że różnice między grupami wykształcenia są statystycznie istotne.
