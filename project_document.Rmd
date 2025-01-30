@@ -739,3 +739,25 @@ summary(anova_result)
 ```
 
 Powyższe zestawienie wskazuje, że wykształcenie ma istotny wływ na dochód, oraz że efekt tego wykształcenia jest silny (F = 22.85). Niska wartość p-value wskazuje również, że różnice między grupami wykształcenia są statystycznie istotne.
+
+
+
+Test dla zmiennej income weryfikujący czy zmienna income ma rozkład normalny
+Ho: zmienna income ma średnią wartość w populacji wynoszącą 60k usd
+Ha: zmienna income nie ma średniej wartości w populacji wynoszącej 60k usd 
+
+
+```{r}
+#Test Z
+alfa=0,05
+z_test <- (income_stats$mean - 60000)/income_stats$sd
+print(z_test)
+
+p_value <- 2*pnorm(-abs(z_test))
+print(p_value)
+```
+
+
+
+Wybrano test z ponieważ próbka jest za duża by wykonać test t-studenta. P-valuje jest większe od alfy, więc możemy odrzucić H0, mówiącą, że średnie icome w populacji wynosi 60k usd w skali roku.
+
