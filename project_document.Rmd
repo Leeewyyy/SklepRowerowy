@@ -597,6 +597,55 @@ purchased_data%>%
 ```
 Statystyki wieku z podziałem na płeć są podobne. Można wyciągnąć wniosek, że płeć nie ma znaczenia w konteście wieku dla kupujących. 
 
+#children
+```{r}
+children <- data$Children
+children_freq <- table(children)
+children_prop <- prop.table(children_freq) * 100
+
+hist(children, main = "Histogram liczby dzieci",
+     xlab = "Liczba dzieci", ylab = "Częstość", col = "lightblue", border = "black")
+list(
+  summary = summary(children),
+  mean = mean(children, na.rm = TRUE),
+  median = median(children, na.rm = TRUE),
+  sd = sd(children, na.rm = TRUE),
+  variance = var(children, na.rm = TRUE),
+  range = range(children, na.rm = TRUE),
+  frequency_table = children_freq,
+  percentage_table = children_prop
+)
+```
+W badanej próbie dominują osoby z małą liczbą dzieci (0–2), co stanowi około 66% respondentów, z czego 27,8% nie posiada dzieci.
+Przeciętna liczba dzieci wynosi około 1,9, a mediana to 2 dzieci. Rozkład liczby dzieci jest prawoskośny – większa liczba dzieci (4–5) występuje rzadziej. Rozstęp wartości wynosi od 0 do 5 dzieci, co wskazuje na umiarkowaną zmienność w populacji. Wyniki te mogą wskazywać na zmiany w strukturze demograficznej, takie jak malejąca liczba dzieci w rodzinach, co może być efektem czynników ekonomicznych, społecznych lub kulturowych.
+
+#education
+```{r}
+education <- data$Education
+education_freq <- table(education)
+education_prop <- prop.table(education_freq) * 100
+
+list(
+  frequency_table = education_freq,
+  percentage_table = education_prop
+)
+```
+Na podstawie analizy zmiennej dotyczącej poziomu edukacji i liczby osób, które kupiły rower w sklepie rowerowym, możemy wyciągnąć następujące wnioski: Najwięcej rowerów zakupiły osoby z wykształceniem licencjackim (30,6%), drugą co do wielkości grupą są osoby z częściowo ukończonymi studiami (26,5%). Klienci z ukończoną szkołą średnią (17,9%) oraz z wykształceniem magisterskim lub wyższym (17,4%). Uzyskane wyniki zdecydowanie pokazują nam, że poziom edukacji i stopień ukończonej szkoły ma wpływ na zakup roweru.
+
+#occupation
+```{r}
+occupation <- data$Occupation
+occupation_freq <- table(occupation)
+occupation_prop <- prop.table(occupation_freq) * 100
+
+list(
+  frequency_table = occupation_freq,
+  percentage_table = occupation_prop
+)
+```
+Grupa occupation, która przedstawia nam zakupioną liczbę rowerów przez osoby z różnych grup zawodowych, uzyskaliśmy następujące wyniki: Największą grupę klientów sklepu rowerowego stanowią osoby z grupy zawodowej Professional (27,6%), drugą co do wielkości grupą są osoby wykonujące prace Skilled Manual (25,5%). Osoby pracujące w zawodach Clerical (17,7%), najmniejszy udział wśród klientów mają osoby z grupy Manual (11,9%). Wyniki wskazują zdecydowaną dominację zawodów profesjonalnych oraz wykwalifikowanych pracowników. 
+
+
 ##cars
 ```{r}
 cars_purchased <- data[data$Purchased.Bike=="Yes", ]
