@@ -24,13 +24,17 @@ zostaje zakupiony.
 ### Dane
 
 Zbiór danych w pliku *sklep_rowerowy.csv* zawiera szczegółowe informacje
-na temat 1000 użytkowników z różnych środowisk oraz finalną decyzję o kupnie roweru. Zbiór ten może posiadać braki, wartości odstające oraz inne niedoskonałości.
+na temat 1000 użytkowników z różnych środowisk oraz finalną decyzję o
+kupnie roweru. Zbiór ten może posiadać braki, wartości odstające oraz
+inne niedoskonałości.
 
 ### Repozytorium na GitHub
 
-Prace zostały wykonane z użyciem systemu kontroli wersji Git, a jako zdalne miejsce do przechowania repozytorium wykorzystano platformę GitHub.
+Prace zostały wykonane z użyciem systemu kontroli wersji Git, a jako
+zdalne miejsce do przechowania repozytorium wykorzystano platformę
+GitHub.
 
-Link do repozytorium: https://github.com/Leeewyyy/SklepRowerowy
+Link do repozytorium: <https://github.com/Leeewyyy/SklepRowerowy>
 
 ### Użyte biblioteki
 
@@ -76,9 +80,11 @@ is.special <- function(x){
   if(is.numeric(x)) !is.finite(x) else is.na(x)
 }
 ```
-```{r results='hide'} 
+
+```{r results='hide'}
 sapply(data, is.special)
 ```
+
 ```{r}
 for(n in colnames(data)){
   is.na(data[[n]]) <- is.special(data[[n]])
@@ -93,10 +99,14 @@ podsumowującą braki dla wszystkich zmiennych.
 miss_var_summary(data)
 ```
 
-Brakujące dane znajdują się w kolumnach: *cars*, *children*, *age* oraz *income*. W powyższej tabeli możemy zauważyć dokładną ilość braków dla każdej zmiennej oraz procentowy skład tych braków w stosunku do całego zbioru danych.
+Brakujące dane znajdują się w kolumnach: *cars*, *children*, *age* oraz
+*income*. W powyższej tabeli możemy zauważyć dokładną ilość braków dla
+każdej zmiennej oraz procentowy skład tych braków w stosunku do całego
+zbioru danych.
 
 Warto również dowiedzieć się ile wierszy zawiera wartości NA. Poniższy
-kod tworzy tabelę pokazującą rozkład ilości NA na poszczególne zmienne oraz ich procent w stosunku do całego zbioru.
+kod tworzy tabelę pokazującą rozkład ilości NA na poszczególne zmienne
+oraz ich procent w stosunku do całego zbioru.
 
 ```{r}
 miss_case_table(data)
@@ -111,37 +121,42 @@ mają 2 wiersze.
 vis_miss(data)
 ```
 
-Wizualizacja całego zbioru danych wykazała 0.2% zbioru jako brakujące dane.
+Wizualizacja całego zbioru danych wykazała 0.2% zbioru jako brakujące
+dane.
 
 ```{r}
 gg_miss_var(data)
 ```
 
-Powyżej jeszcze wykres słupkowy pokazujący liczbę
-brakujących wartości dla każdej zmiennej.
+Powyżej jeszcze wykres słupkowy pokazujący liczbę brakujących wartości
+dla każdej zmiennej.
 
 ```{r}
 gg_miss_upset(data, nsets=12)
 ```
 
-
 Najwięcej danych odstających (bezwzględnie) widnieje dla zmiennych
-Cars_NA, Children_NA i Age_NA (tj. poziome słupki). Opis poszczególnych kolumn wygląda następująco:
+Cars_NA, Children_NA i Age_NA (tj. poziome słupki). Opis poszczególnych
+kolumn wygląda następująco:
 
-
-- kolumna 1: jest dokładnie 9 obserwacji, w których zmienna ma wartość NA
-- kolumna 2: jest dokładnie 7 obserwacji, w których zmienna Children ma wartość NA 
-- kolumna 3: jest dokładnie 6 obserwacji, w których zmienna Age ma wartość NA 
-- kolumna 4: jest dokładnie 5 obserwacji, w których zmienna Income ma wartość NA 
-- kolumna 5: jest dokładnie 1 obserwacja, w której zmienna Income, jak i Age ma wartość NA 
-- kolumna 6: jest dokładnie 1 obserwacja, w których zmienna Age, jak i
-Chindren ma wartość 1
+-   kolumna 1: jest dokładnie 9 obserwacji, w których zmienna ma wartość
+    NA
+-   kolumna 2: jest dokładnie 7 obserwacji, w których zmienna Children
+    ma wartość NA
+-   kolumna 3: jest dokładnie 6 obserwacji, w których zmienna Age ma
+    wartość NA
+-   kolumna 4: jest dokładnie 5 obserwacji, w których zmienna Income ma
+    wartość NA
+-   kolumna 5: jest dokładnie 1 obserwacja, w której zmienna Income, jak
+    i Age ma wartość NA
+-   kolumna 6: jest dokładnie 1 obserwacja, w których zmienna Age, jak i
+    Chindren ma wartość 1
 
 ### Zależności między brakami danych w zmiennych
 
 Podejmiemy teraz próbę analizy zależności tych braków między sobą.
-Zacznijmy od zbadania zależności zmiennej cars. Wyznaczymy wykres zależności w stosunku do zmiennych Income
-oraz Age.
+Zacznijmy od zbadania zależności zmiennej cars. Wyznaczymy wykres
+zależności w stosunku do zmiennych Income oraz Age.
 
 ```{r}
 ggplot(data = data, aes(x = Cars, y = Income)) + 
@@ -218,7 +233,10 @@ data <- data[!is.na(data$Gender) & data$Gender != "", ]
 data <- data[!is.na(data$Home.Owner) & data$Home.Owner != "", ]
 ```
 
-Powyższy output kodu potwierdza rozwiązanie problemu braków. Zostały one uzupełnione metodą Hot Deck. W rezultacie uzyskano kompletny zbiór danych, który jest gotowy do dalszej analizy statystycznej lub modelowania.
+Powyższy output kodu potwierdza rozwiązanie problemu braków. Zostały one
+uzupełnione metodą Hot Deck. W rezultacie uzyskano kompletny zbiór
+danych, który jest gotowy do dalszej analizy statystycznej lub
+modelowania.
 
 # **Wizualizacja Danych**
 
@@ -242,9 +260,9 @@ ggplot(data, aes(x = Marital.Status, fill = Purchased.Bike)) +
 
 Na analizowanym wykresie, możemy zauważyć, iż to single częściej
 decydują się na zakup rowerów, prównując bezwzględnie w stosunku do
-żonatych/zamężnych. Większość osób w związku małżeńskim nie deccyduje
-się na zakup rowerów. Liczba osób, o których nie mamy danych o ich
-stanie cywilnym jest marginalna i nie ma wpływu na całokształt analizy.
+żonatych/zamężnych. Większość osób w związku małżeńskim nie decyduje się
+na zakup rowerów. Liczba osób, o których nie mamy danych o ich stanie
+cywilnym jest marginalna i nie ma wpływu na całokształt analizy.
 
 ### Zmienna Gender
 
@@ -336,7 +354,7 @@ ggplot(data_percent, aes(x = Region, y = Percentage, fill=Purchased.Bike)) +
 ```
 
 Najwięcej kupujących było z Ameryki Północnej. Widać tutaj znaczną
-przewagę osób które nie kupiły roweru. W Europie było mniej więcej tyle
+przewagę osób, które nie kupiły roweru. W Europie było mniej więcej tyle
 samo osób, które zdecydowały się na rower, co tych które go nie nabyły.
 Z regionu Pacyfiku było więcej osób, które kupiły rower.
 
@@ -506,6 +524,7 @@ tej zmiennej.
 # **Analiza opisowa**
 
 ### Dochód
+
 ```{r}
 
 # Statystyki opisowe dla Income
@@ -520,9 +539,14 @@ income_stats <- list(
 )
 list(income_stats = income_stats)
 ```
-Mediana dochodu (środkowa) wynosi 60000 USD rocznie. Osoba z najmniejszym dochodem w skali roku zarabia 1000 USD rocznie, a osoba z największym dochodem zarabia 170 000 USD rocznie. Średnio, osoby w populacji zarabiają 55.920.25 USD w skali roku. Dodatkowo odchylenie dochodów od tej średniej wynosi 31179.83 USD w skali roku.
 
-### Płeć 
+Mediana dochodu (środkowa) wynosi 60000 USD rocznie. Osoba z
+najmniejszym dochodem w skali roku zarabia 1000 USD rocznie, a osoba z
+największym dochodem zarabia 170 000 USD rocznie. Średnio, osoby w
+populacji zarabiają 55.920.25 USD w skali roku. Dodatkowo odchylenie
+dochodów od tej średniej wynosi 31179.83 USD w skali roku.
+
+### Płeć
 
 ```{r}
 # Statystyki dla Gender (binarnie)
@@ -550,7 +574,11 @@ list(marital_status_stats = marital_status_stats,
   marital_status_percentage = marital_status_percentage)
 ```
 
-Biorąc pod uwagę, że zmienne Martial.Status i Gender, to zmienne jakościowe, cieżko jest policzyć statystyki opisowe, ponieważ dane nie są liczbowe. Można natomiast zauważyć iż w zmiennej martial.status dominują osoby będące w związku małżeńskim, które stanowią niemal 54% populacji.
+Biorąc pod uwagę, że zmienne Marital.Status i Gender, to zmienne
+jakościowe, cieżko jest policzyć statystyki opisowe, ponieważ dane nie
+są liczbowe. Można natomiast zauważyć iż w zmiennej marital.status
+dominują osoby będące w związku małżeńskim, które stanowią niemal 54%
+populacji.
 
 ### Wiek
 
@@ -570,7 +598,10 @@ purchased_data%>%
   add_header_above(c("WIEK OSÓB KTÓRE KUPIŁY ROWER" = 2))%>%
   kable_styling(bootstrap_options=c("striped", "hover", "responsive"), position="center")
 ```
-Osoby kupujące rower mają średnio 43 lata. Najmłodszy kupujący miał 25 lat, a najstarszy 78. Odchylenie standardowe wyniosło nieco ponad 10 lat, co oznacza umiarkowane zróżnicownie wieku wśród klientów.
+
+Osoby kupujące rower mają średnio 43 lata. Najmłodszy kupujący miał 25
+lat, a najstarszy 78. Odchylenie standardowe wyniosło nieco ponad 10
+lat, co oznacza umiarkowane zróżnicownie wieku wśród klientów.
 
 ```{r}
 purchased_data%>%
@@ -584,7 +615,9 @@ purchased_data%>%
   kbl()%>%
   kable_styling(bootstrap_options=c("striped", "hover", "responsive"), position="center")
 ```
-Statystyki wieku z podziałem na płeć są podobne. Można wyciągnąć wniosek, że płeć nie ma znaczenia w konteście wieku dla kupujących. 
+
+Statystyki wieku z podziałem na płeć są podobne. Można wyciągnąć
+wniosek, że płeć nie ma znaczenia w konteście wieku dla kupujących.
 
 # Ilość posiadanych dzieci
 
@@ -606,8 +639,16 @@ list(
   percentage_table = children_prop
 )
 ```
-W badanej próbie dominują osoby z małą liczbą dzieci (0–2), co stanowi około 66% respondentów, z czego 27,6% nie posiada dzieci.
-Przeciętna liczba dzieci wynosi około 1,9, a mediana to 2 dzieci. Rozkład liczby dzieci jest prawoskośny – większa liczba dzieci (4–5) występuje rzadziej. Rozstęp wartości wynosi od 0 do 5 dzieci, co wskazuje na umiarkowaną zmienność w populacji. Wyniki te mogą wskazywać na zmiany w strukturze demograficznej, takie jak malejąca liczba dzieci w rodzinach, co może być efektem czynników ekonomicznych, społecznych lub kulturowych.
+
+W badanej próbie dominują osoby posiadające małą liczbę dzieci (0–2), co
+stanowi około 66% respondentów, z czego 27,6% nie posiada dzieci.
+Przeciętna liczba dzieci wynosi około 1,9, a mediana to 2 dzieci.
+Rozkład liczby dzieci jest prawoskośny – większa liczba dzieci (4–5)
+występuje rzadziej. Rozstęp wartości wynosi od 0 do 5 dzieci, co
+wskazuje na umiarkowaną zmienność w populacji. Wyniki te mogą wskazywać
+na zmiany w strukturze demograficznej, takie jak malejąca liczba dzieci
+w rodzinach, co może być efektem czynników ekonomicznych, społecznych
+lub kulturowych.
 
 # Wykształcenie
 
@@ -621,7 +662,15 @@ list(
   percentage_table = education_prop
 )
 ```
-Na podstawie analizy zmiennej dotyczącej poziomu edukacji i liczby osób, które kupiły rower w sklepie rowerowym, możemy wyciągnąć następujące wnioski: Najwięcej rowerów zakupiły osoby z wykształceniem licencjackim (30,2%), drugą co do wielkości grupą są osoby z częściowo ukończonymi studiami (26,5%). Klienci z ukończoną szkołą średnią (18,2%) oraz z wykształceniem magisterskim lub wyższym (17,4%). Uzyskane wyniki zdecydowanie pokazują nam, że poziom edukacji i stopień ukończonej szkoły ma wpływ na zakup roweru.
+
+Na podstawie analizy zmiennej dotyczącej poziomu edukacji i liczby osób,
+które kupiły rower w sklepie rowerowym, możemy wyciągnąć następujące
+wnioski: Najwięcej rowerów zakupiły osoby z wykształceniem licencjackim
+(30,2%), drugą co do wielkości grupą są osoby z częściowo ukończonymi
+studiami (26,5%). Klienci z ukończoną szkołą średnią (18,2%) oraz z
+wykształceniem magisterskim lub wyższym (17,4%). Uzyskane wyniki
+zdecydowanie pokazują nam, że poziom edukacji i stopień ukończonej
+szkoły ma wpływ na zakup roweru.
 
 ### Zawód
 
@@ -635,7 +684,15 @@ list(
   percentage_table = occupation_prop
 )
 ```
-Grupa occupation, która przedstawia nam zakupioną liczbę rowerów przez osoby z różnych grup zawodowych, uzyskaliśmy następujące wyniki: Największą grupę klientów sklepu rowerowego stanowią osoby z grupy zawodowej Professional (27,5%), drugą co do wielkości grupą są osoby wykonujące prace Skilled Manual (25,4%). Osoby pracujące w zawodach Clerical (17,6%), najmniejszy udział wśród klientów mają osoby z grupy Manual (12,2%). Wyniki wskazują zdecydowaną dominację zawodów profesjonalnych oraz wykwalifikowanych pracowników. 
+
+Grupa occupation, która przedstawia nam zakupioną liczbę rowerów przez
+osoby z różnych grup zawodowych, uzyskaliśmy następujące wyniki:
+Największą grupę klientów sklepu rowerowego stanowią osoby z grupy
+zawodowej Professional (27,5%), drugą co do wielkości grupą są osoby
+wykonujące prace Skilled Manual (25,4%). Osoby pracujące w zawodach
+Clerical (17,6%), najmniejszy udział wśród klientów mają osoby z grupy
+Manual (12,2%). Wyniki wskazują zdecydowaną dominację zawodów
+profesjonalnych oraz wykwalifikowanych pracowników.
 
 ### Ilość posiadanych samochodów
 
@@ -661,26 +718,43 @@ cars_not_purchased %>%
   add_header_above(c("ŚREDNIA ILOŚĆ SAMOCHODÓW OSOB, KTÓRE NIE KUPIŁY ROWERU" = 2))%>%
   kable_styling(bootstrap_options=c("striped", "hover", "responsive"), position="center")
 ```
-Po uzyskaniu średniej ilości posiadanych samochodów klientów sklepu, możemy zauważyć zależność, że im więcej samochodów posiada klient tym jest mniejsze prawdopodobieństwo, że kupi rower. Wskazuje na to znaczna różnica pomiędzy obiema grupami - 1.67 samochodu u osób, które roweru nie kupiło, a tylko 1.23 samochodu u osób, które rower kupiły.
 
+Po uzyskaniu średniej ilości posiadanych samochodów klientów sklepu,
+możemy zauważyć zależność, że im więcej samochodów posiada klient tym
+jest mniejsze prawdopodobieństwo, że kupi rower. Wskazuje na to znaczna
+różnica pomiędzy obiema grupami - 1.67 samochodu u osób, które roweru
+nie kupiło, a tylko 1.23 samochodu u osób, które rower kupiły.
 
 ### Korelacja pomiędzy zmiennymi numerycznymi
+
 ```{r}
 corr <- cor(data[c("Income", "Age", "Children")], method = "pearson")
 corrplot(corr, method = "number", type = "upper", diag =FALSE)
 ```
 
-Pomiędzy przychodem, a wiekiem zachodzi słaba korelacja dodatnia. Oznacza to, że w miarę wieku dochód nieznacznie rośnie, ale ta zależność jest dość słaba, można przyjąć, że nieznaczna.
+Pomiędzy przychodem, a wiekiem zachodzi słaba korelacja dodatnia.
+Oznacza to, że w miarę wieku dochód nieznacznie rośnie, ale ta zależność
+jest dość słaba, można przyjąć, że nieznaczna.
 
-Między przychodem, a liczbą dzieci również zachodzi słaba korelacja dodatnia. Osoby z wyższym dochodem mogą mieć nieco więcej dzieci, ale jest to także relacja słaba, co sugeruje, że dochód ma niewielki wpływ na liczbę dzieci w analizowanej grupie.
+Między przychodem, a liczbą dzieci również zachodzi słaba korelacja
+dodatnia. Osoby z wyższym dochodem mogą mieć nieco więcej dzieci, ale
+jest to także relacja słaba, co sugeruje, że dochód ma niewielki wpływ
+na liczbę dzieci w analizowanej grupie.
 
-Istnieje średnia dodatnia korelacja między wiekiem a liczbą dzieci. W miarę jak wiek rośnie, liczba dzieci również rośnie. Wartość 0.53 wskazuje na wyraźniejszy związek, co może sugerować, że starsze osoby mogą mieć więcej dzieci.
-
+Istnieje średnia dodatnia korelacja między wiekiem a liczbą dzieci. W
+miarę jak wiek rośnie, liczba dzieci również rośnie. Wartość 0.53
+wskazuje na wyraźniejszy związek, co może sugerować, że starsze osoby
+mogą mieć więcej dzieci.
 
 # **Wnioskowanie statystyczne**
 
 ### Testy Chi-kwardrat zmiennych kategorycznych
-Aby sprawdzić istotność zmiennych kategorycznych dla do testów wszystkich zmiennych postawiono tezę H0: "Zmienna nie ma wpływu na decyzję o zakupie roweru", w opozycji do H1: "Zmienna ma wpływ na decyzję o zakupie roweru".
+
+Aby sprawdzić istotność zmiennych kategorycznych dla do testów
+wszystkich zmiennych postawiono tezę H0: "Zmienna nie ma wpływu na
+decyzję o zakupie roweru", w opozycji do H1: "Zmienna ma wpływ na
+decyzję o zakupie roweru".
+
 ```{r}
 categorical_vars <-c("Marital.Status","Gender","Education","Occupation", "Home.Owner", "Commute.Distance", "Region") # Lista zmiennych kategorycznych
 data[] <- lapply(data, function(x) if(is.character(x)) as.factor(x) else x)
@@ -720,11 +794,15 @@ ggplot(chi_square_df, aes(x = Variable, y = P_Value, fill = Significant)) +
   scale_color_manual(values = c("red", "green"))
 ```
 
-Istotne w decyzji o zakupie roweru, czyli tam, gdzie wartość p-value wyniosła mniej niż 0.05 okazały się zmienne: Commute.Distance, Education, Marital.Status, Region. Nieistotynymi czynnikami przy zakupie roweru są płeć, posiadanie domu i zawód.
+Istotne w decyzji o zakupie roweru, czyli tam, gdzie wartość p-value
+wyniosła mniej niż 0.05 okazały się zmienne: Commute.Distance,
+Education, Marital.Status, Region. Nieistotynymi czynnikami przy zakupie
+roweru są płeć, posiadanie domu i zawód.
 
 ### Test ANOVA
 
-Wykonajmy teraz test ANOVA, aby sprawdzić wpływ wykształcenia na dochód w naszych danych.
+Wykonajmy teraz test ANOVA, aby sprawdzić wpływ wykształcenia na dochód
+w naszych danych.
 
 ```{r}
 #Wykonanie testu ANOVA
@@ -733,14 +811,17 @@ anova_result <- aov(Income ~ Education, data = data)
 summary(anova_result)
 ```
 
-Powyższe zestawienie wskazuje, że wykształcenie ma istotny wływ na dochód, oraz że efekt tego wykształcenia jest silny (F = 22.85). Niska wartość p-value wskazuje również, że różnice między grupami wykształcenia są statystycznie istotne.
+Powyższe zestawienie wskazuje, że wykształcenie ma istotny wływ na
+dochód, oraz że efekt tego wykształcenia jest silny (F = 22.85). Niska
+wartość p-value wskazuje również, że różnice między grupami
+wykształcenia są statystycznie istotne.
 
 ### Test Z
 
-Test dla zmiennej income weryfikujący czy zmienna income ma rozkład normalny.
-Ho: zmienna income ma średnią wartość w populacji wynoszącą 60000 USD
-Ha: zmienna income nie ma średniej wartości w populacji wynoszącej 60000 USD 
-
+Test dla zmiennej Income weryfikujący czy zmienna ma rozkład normalny.\
+H0: Zmienna Income ma średnią wartość w populacji wynoszącą 60000 USD\
+H1: Zmienna Income nie ma średniej wartości w populacji wynoszącej 60000
+USD
 
 ```{r}
 #Test Z
@@ -752,12 +833,35 @@ p_value <- 2*pnorm(-abs(z_test))
 print(p_value)
 ```
 
-
-Wybrano test Z ponieważ próbka jest za duża by wykonać test t-studenta. P-valuje jest większe od alfy, więc możemy odrzucić H0, mówiącą, że średnie income w populacji wynosi 60000 USD w skali roku.
+Wybrano test Z ponieważ próbka jest za duża by wykonać test t-studenta.
+P-value jest większe od alfy, więc możemy odrzucić H0, mówiącą, że
+średnie income w populacji wynosi 60000 USD w skali roku.
 
 # **Podsumowanie i wnioski końcowe**
 
-Celem przeprowadzonej analizy było określenie czynników, które mają wpływ na decyzję klienta o zakupie roweru. W tym celu wykorzystano zbiór danych zawierający informacje demograficzne oraz ekonomiczne klientów sklepu rowerowego. Analiza uwzględniała zmienne takie jak status cywilny, płeć, dochód, liczba dzieci, wiek oraz inne dane opisujące klientów. Przed rozpoczęciem analizy wykonano detekcję i imputację brakujących danych, które uzupełniono metodą Hot Deck, co pozwoliło na stworzenie kompletnego zbioru danych do dalszej analizy. Po przygotowaniu danych przeprowadzono szeroką analizę eksploracyjną, obejmującą zarówno wizualizacje danych, jak i obliczenia statystyczne. Wykorzystano różne metody prezentacji danych, takie jak histogramy, wykresy słupkowe oraz testy statystyczne, aby zidentyfikować kluczowe trendy i zależności. Szczególną uwagę zwrócono na różnice między grupami klientów, a także na wpływ poszczególnych zmiennych na decyzję o zakupie roweru. W ramach analizy opisowej przeanalizowano również statystyki dotyczące dochodów, wieku, liczby dzieci oraz struktury wykształcenia w badanej grupie.
+Celem przeprowadzonej analizy było określenie czynników, które mają
+wpływ na decyzję klienta o zakupie roweru. Aby to osiągnąć wykorzystano zbiór
+danych zawierający informacje demograficzne oraz ekonomiczne klientów
+sklepu rowerowego. Analiza uwzględniała zmienne takie jak status
+cywilny, płeć, dochód, liczba dzieci, wiek oraz inne dane opisujące
+klientów. Przed rozpoczęciem analizy wykonano detekcję i imputację
+brakujących danych, które uzupełniono metodą Hot Deck, co pozwoliło na
+stworzenie kompletnego zbioru danych do dalszej analizy. Po
+przygotowaniu danych przeprowadzono szeroką analizę eksploracyjną,
+obejmującą zarówno wizualizacje danych, jak i obliczenia statystyczne.
+Wykorzystano różne metody prezentacji danych, takie jak histogramy,
+wykresy słupkowe oraz testy statystyczne, aby zidentyfikować kluczowe
+trendy i zależności. Szczególną uwagę zwrócono na różnice między grupami
+klientów, a także na wpływ poszczególnych zmiennych na decyzję o zakupie
+roweru. W ramach analizy opisowej przeanalizowano również statystyki
+dotyczące dochodów, wieku, liczby dzieci oraz struktury wykształcenia w
+badanej grupie.
 
-Przeprowadzona analiza pozwoliła na określenie kluczowych czynników wpływających na decyzję o zakupie roweru. Okazało się, że największą skłonność do zakupu wykazują osoby w wieku 35-40 lat pokonujące około 5 kilometrów do pracy. Po 55 roku życia zainteresowanie zakupem własnego roweru maleje. Osoby posiadające wykształcenie wyższe oraz większą liczbę samochodów (więcej niż 2) rzadziej kupują rowery. Płeć klienta, posiadanie domu na własność i wykonywany zawód nie mają istotnego wpływu na decyzję zakupową.
-
+Przeprowadzona analiza pozwoliła na określenie kluczowych czynników
+wpływających na decyzję o zakupie roweru. Okazało się, że największą
+skłonność do zakupu wykazują osoby w wieku 35-40 lat pokonujące około 5
+kilometrów do pracy. Po 55 roku życia zainteresowanie zakupem własnego
+roweru maleje. Osoby posiadające wykształcenie wyższe oraz większą
+liczbę samochodów (więcej niż 2) rzadziej kupują rowery. Płeć klienta,
+posiadanie domu na własność i wykonywany zawód nie mają istotnego wpływu
+na decyzję zakupową.
